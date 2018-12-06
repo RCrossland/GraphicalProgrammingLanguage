@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
     <Compile Include="GraphicalProgrammingLanguageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,5 +63,6 @@
       <DependentUpon>GraphicalProgrammingLanguageForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
