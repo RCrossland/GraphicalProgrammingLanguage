@@ -15,8 +15,10 @@ namespace GraphicalProgrammingLanguageTests
 		public void Pass_Invalid_Command_Call()
 		{
 			Command command = new Command();
-			bool commandType = command.ValidateCommand(1, "IncorrectCommand");
+			string errorMessage;
+			bool commandType = command.ValidateCommand(1, "IncorrectCommand 1", out errorMessage);
 
+			Assert.AreEqual("IncorrectCommand is an invalid command. Please see 'help' for a list of commands.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(false, commandType, "Incorrect command wasn't spotted.");
 		}
 
@@ -24,8 +26,10 @@ namespace GraphicalProgrammingLanguageTests
 		public void Pass_Invalid_Number_Of_Parameters()
 		{
 			Command command = new Command();
-			bool commandType = command.ValidateCommand(1, "drawto 0 0 0");
+			string errorMessage;
+			bool commandType = command.ValidateCommand(1, "drawto 0 0 0", out errorMessage);
 
+			Assert.AreEqual("Wrong number of parameters passed.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(false, commandType, "Incorrect number of parameters passed.");
 		}
 
@@ -33,9 +37,11 @@ namespace GraphicalProgrammingLanguageTests
 		public void Pass_Invalid_Parameter_Type()
 		{
 			Command command = new Command();
-			bool commandType = command.ValidateCommand(1, "drawto 0 string");
+			string errorMessage;
+			bool commandType = command.ValidateCommand(1, "drawto 0 string", out errorMessage);
 
-			Assert.AreEqual(false, commandType, "Incorrect parameter type not spotted");
+			Assert.AreEqual("You've entered the wrong parameter type.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual(false, commandType, "Incorrect parameter type not spotted.");
 		}
 	}
 }

@@ -20,16 +20,17 @@ namespace GraphicalProgrammingLanguage
 			{"polygon", new string[]{"int"} }
 		};
 
-		public bool ValidateCommand(int lineNumber, string command)
+		public bool ValidateCommand(int lineNumber, string command, out string errorMessage)
 		{
 			// Split the command based on a space
-			string[] splitCommand = command.ToLower().Split(' ');
-			string commandString = splitCommand[0];
+			string[] splitCommand = command.Split(' ');
+			string commandString = splitCommand[0].ToLower();
 			string[] parameters = splitCommand.Skip(1).ToArray();
 
 			// Check whether the command is valid
 			if (!acceptedCommands.ContainsKey(commandString))
 			{
+				errorMessage = splitCommand[0] + " is an invalid command. Please see 'help' for a list of commands.";
 				return false;
 			}
 
@@ -39,6 +40,7 @@ namespace GraphicalProgrammingLanguage
 			// Check whether the right number of parameters have been passed
 			if(!expectedParameters.Length.Equals(parameters.Length))
 			{
+				errorMessage = "Wrong number of parameters passed.";
 				return false;
 			}
 
@@ -53,11 +55,13 @@ namespace GraphicalProgrammingLanguage
 					int throwAwayVariable;
 					if (!int.TryParse(userInputtedParameter, out throwAwayVariable))
 					{
+						errorMessage = "You've entered the wrong parameter type.";
 						return false;
 					}
 				}
 			}
 
+			errorMessage = "";
 			return true;
 		}
 	}
