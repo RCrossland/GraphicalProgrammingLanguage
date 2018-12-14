@@ -27,9 +27,9 @@ namespace GraphicalProgrammingLanguageTests
 		{
 			Command command = new Command();
 			string errorMessage;
-			bool commandType = command.ValidateCommand(1, "drawto 0 0 0", out errorMessage);
+			bool commandType = command.ValidateCommand(1, "drawto 0, 0, 0", out errorMessage);
 
-			Assert.AreEqual("Wrong number of parameters passed.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual("drawto expects 2 parameters to be passed.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(false, commandType, "Incorrect number of parameters passed.");
 		}
 
@@ -38,9 +38,9 @@ namespace GraphicalProgrammingLanguageTests
 		{
 			Command command = new Command();
 			string errorMessage;
-			bool commandType = command.ValidateCommand(1, "drawto 0 string", out errorMessage);
+			bool commandType = command.ValidateCommand(1, "drawto 0, string", out errorMessage);
 
-			Assert.AreEqual("You've entered the wrong parameter type.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual("string must be an integer.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(false, commandType, "Incorrect parameter type not spotted.");
 		}
 	}
