@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,9 @@ namespace GraphicalProgrammingLanguage
 {
 	public partial class GraphicalProgrammingLanguageForm : Form
 	{
+		ArrayList shapes = new ArrayList();
+		Command command = new Command();
+
 		public GraphicalProgrammingLanguageForm()
 		{
 			InitializeComponent();
@@ -20,18 +24,18 @@ namespace GraphicalProgrammingLanguage
 		// Single Line Input
 		private void SingleLineInputEnter(object sender, KeyEventArgs e)
 		{
-			if(e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter)
 			{
 				// Save the object of the textbox
 				TextBox singleLineInputTextBox = (sender as TextBox);
+				string[] splitUserInput = command.SplitUserInput(singleLineInputTextBox.Text);
 
-				// Get the TextBox value
-				string singleLineInputCommand = singleLineInputTextBox.Text;
+				string commandString = splitUserInput[0];
+				string[] commandParameters = command.SplitParameters(splitUserInput);
 
-				// Create a command object
-				Command command = new Command();
+				// Validate the command and hold the error message returned in a variable
 				string errorMessage;
-				bool validCommand = command.ValidateCommand(1, SingleLineInputTextbox.Text, out errorMessage);
+				bool validCommand = command.ValidateCommand(1, commandString, commandParameters, out errorMessage);
 
 				if (!validCommand)
 				{
@@ -50,6 +54,11 @@ namespace GraphicalProgrammingLanguage
 
 					// Set the TextBox value to be an empty string
 					singleLineInputTextBox.Text = "";
+
+					if(command.ExecuteCommand(shapes, commandString, commandParameters))
+					{
+						this.GraphicsPictureBox.Refresh();
+					}
 				}
 			}
 		}
@@ -70,6 +79,17 @@ namespace GraphicalProgrammingLanguage
 			if (MultiLineInputSaveFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				MultiLineInputTextBox.SaveFile(MultiLineInputSaveFileDialog.FileName, RichTextBoxStreamType.PlainText);
+			}
+		}
+
+		private void GraphicsPictureBoxPaint(object sender, PaintEventArgs e)
+		{
+			Graphics g = e.Graphics;
+
+			for(int i = 0; i < shapes.Count; i++)
+			{
+				Shape s = (Shape) shapes[i];
+				s.Draw(g);
 			}
 		}
 	}

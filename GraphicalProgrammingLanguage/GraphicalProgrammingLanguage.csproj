@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Circle.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="GraphicalProgrammingLanguageForm.cs">
       <SubType>Form</SubType>
@@ -54,6 +55,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shape.cs" />
+    <Compile Include="ShapeFactory.cs" />
+    <Compile Include="Shapes.cs" />
+    <Compile Include="Rectangle.cs" />
+    <Compile Include="Square.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

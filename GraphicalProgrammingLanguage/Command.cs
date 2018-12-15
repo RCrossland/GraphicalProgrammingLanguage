@@ -1,42 +1,58 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
 	public class Command
 	{
-		public Command() { }
+		int currentX, currentY;
+
+		public Command() {
+			currentX = 0;
+			currentY = 0;
+		}
 
 		private IDictionary<string, string[]> acceptedCommands = new Dictionary<string, string[]>()
 		{
 			{"drawto", new string[]{"int", "int"} },
 			{"moveto", new string[]{"int", "int"} },
-			{"circle", new string[]{"int"} },
-			{"rectangle", new string[]{"int", "int"} },
+			{"circle", new string[]{"colour", "int"} },
+			{"rectangle", new string[]{"colour", "int", "int"} },
+			{"square", new string[]{"colour", "int"} },
 			{"triangle", new string[]{"int", "int", "int"} },
-			{"polygon", new string[]{"int"} }
+			{"polygon", new string[]{"int"} },
+			{"colour", new string[]{"string"} }
 		};
 
-		public bool ValidateCommand(int lineNumber, string command, out string errorMessage)
+		public string[] SplitUserInput(string userInput)
 		{
 			// Split the command based on a space to get the command and the parameters
-			string[] splitCommand = command.Trim().Split(' ');
-			string commandString = splitCommand[0];
+			return userInput.Trim().Split(' ');
+		}
 
-			// Remove the command from the array
-			string[] parameters = splitCommand.Skip(1).ToArray();
+		public string[] SplitParameters(string[] userInput)
+		{
+			// Remove the command from the array to only leave parameters
+			string[] parameters = userInput.Skip(1).ToArray();
 			// Put the parameters array back to a string based on spaces
 			string parametersString = string.Join(" ", parameters).Trim();
 			// Split the parameters based on a comma
-			string[] parameterSplit = parameters.Length > 0 ? parametersString.Split(',') : new string[0];
+			string[] parameterSplit = parameters.Length > 0 ? parametersString.Split(',').Select(parameter => parameter.Trim()).ToArray() : new string[0];
+			return parameterSplit;
+		}
 
+		public bool ValidateCommand(int lineNumber, string commandString, string[] commandParameters, out string errorMessage)
+		{
 			// Check whether the command is valid
 			if (!acceptedCommands.ContainsKey(commandString.ToLower()))
 			{
-				errorMessage = splitCommand[0] + " is an invalid command. Please see 'help' for a list of commands.";
+				errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
 				return false;
 			}
 
@@ -44,16 +60,16 @@ namespace GraphicalProgrammingLanguage
 			string[] expectedParameters = acceptedCommands[commandString.ToLower()];
 
 			// Check whether the right number of parameters have been passed
-			if(!expectedParameters.Length.Equals(parameterSplit.Length))
+			if(!expectedParameters.Length.Equals(commandParameters.Length))
 			{
 				errorMessage = commandString + " expects " + expectedParameters.Length + " parameters to be passed.";
 				return false;
 			}
 
 			// Loop through the parameters checking that the user has inputted the correct object type
-			for(int i = 0; i < parameterSplit.Length; i++)
+			for(int i = 0; i < commandParameters.Length; i++)
 			{
-				var userInputtedParameter = parameterSplit[i].Trim();
+				var userInputtedParameter = commandParameters[i].Trim();
 				var expectedParameter = expectedParameters[i];
 
 				if(expectedParameter == "int")
@@ -65,10 +81,79 @@ namespace GraphicalProgrammingLanguage
 						return false;
 					}
 				}
+				else if(expectedParameter == "string")
+				{
+					if(!Regex.IsMatch(userInputtedParameter, "^[a-zA-Z]+$"))
+					{
+						errorMessage = userInputtedParameter + " must be a string.";
+						return false;
+					}
+				}
+				else if(expectedParameter == "colour")
+				{
+					if (!Color.FromName(userInputtedParameter).IsKnownColor)
+					{
+						errorMessage = userInputtedParameter + " is not a known colour.";
+						return false;
+					}
+				}
 			}
 
 			errorMessage = "";
 			return true;
+		}
+
+		public bool ExecuteCommand(ArrayList shapeCommands, string commandString, string[] commandParameters)
+		{
+			ShapeFactory shapeFactory = new ShapeFactory();
+
+			commandString = commandString.ToUpper().Trim();
+			if(commandString == "RECTANGLE")
+			{
+				// Get the shape and set the values
+				Shape shape = shapeFactory.GetShape(commandString);
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, 
+					Int32.Parse(commandParameters[1]), Int32.Parse(commandParameters[2]));
+
+				// Add the shape to the ArrayList
+				shapeCommands.Add(shape);
+
+				return true;
+			}
+			else if(commandString == "SQUARE")
+			{
+
+				// Get the shape and set the values
+				Shape shape = shapeFactory.GetShape(commandString);
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY,
+					Int32.Parse(commandParameters[1]), Int32.Parse(commandParameters[1]));
+
+				// Add the shape to the ArrayList
+				shapeCommands.Add(shape);
+
+				return true;
+			}
+			else if(commandString == "CIRCLE")
+			{
+				// Get the shape and set the values
+				Shape shape = shapeFactory.GetShape(commandString);
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY,
+					Int32.Parse(commandParameters[1]));
+
+				// Add the shape to the ArrayList
+				shapeCommands.Add(shape);
+
+				return true;
+			}
+			else if (commandString == "MOVETO")
+			{
+				currentX = Int32.Parse(commandParameters[0]);
+				currentY = Int32.Parse(commandParameters[1]);
+
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
