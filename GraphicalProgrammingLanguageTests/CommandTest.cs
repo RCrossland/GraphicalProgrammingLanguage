@@ -75,7 +75,7 @@ namespace GraphicalProgrammingLanguageTests
 			Command command = new Command();
 
 			string commandString = "Circle";
-			string[] parameters = { "parameter1" };
+			string[] parameters = { "red", "parameter1" };
 
 			string errorMessage;
 			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);

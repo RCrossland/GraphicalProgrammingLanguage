@@ -59,7 +59,7 @@
     <Compile Include="ShapeFactory.cs" />
     <Compile Include="Shapes.cs" />
     <Compile Include="Rectangle.cs" />
-    <Compile Include="Square.cs" />
+    <Compile Include="Triangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

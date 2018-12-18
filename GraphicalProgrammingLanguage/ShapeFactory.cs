@@ -18,11 +18,15 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(shapeType == "SQUARE")
 			{
-				return new Square();
+				return new Rectangle();
 			}
 			else if(shapeType == "CIRCLE")
 			{
 				return new Circle();
+			}
+			else if(shapeType == "TRIANGLE")
+			{
+				return new Triangle();
 			}
 			else
 			{
