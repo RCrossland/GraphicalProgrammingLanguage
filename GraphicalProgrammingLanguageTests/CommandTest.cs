@@ -58,14 +58,14 @@ namespace GraphicalProgrammingLanguageTests
 		{
 			Command command = new Command();
 
-			string commandString = "DrawTo";
+			string commandString = "MoveTo";
 			string[] parameters = { "5", "10", "15" };
 
 			string errorMessage;
 			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
 			bool expected = false;
 
-			Assert.AreEqual("DrawTo expects 2 parameters to be passed.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual("MoveTo expects 2 parameters to be passed.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(expected, actual, "Incorrect number of parameters passed.");
 		}
 
@@ -81,23 +81,7 @@ namespace GraphicalProgrammingLanguageTests
 			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
 			bool expected = false;
 
-			Assert.AreEqual("parameter1 must be an integer.", errorMessage, "The wrong error message was returned.");
-			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
-		}
-
-		[TestMethod]
-		public void Pass_Invalid__Parameter_Type_String()
-		{
-			Command command = new Command();
-
-			string commandString = "Colour";
-			string[] parameters = { "10" };
-
-			string errorMessage;
-			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
-			bool expected = false;
-
-			Assert.AreEqual("10 must be a string.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual("The second parameter parameter1 must be an integer.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 	}

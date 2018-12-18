@@ -18,17 +18,7 @@ namespace GraphicalProgrammingLanguage
 			currentY = 0;
 		}
 
-		private IDictionary<string, string[]> acceptedCommands = new Dictionary<string, string[]>()
-		{
-			{"drawto", new string[]{"int", "int"} },
-			{"moveto", new string[]{"int", "int"} },
-			{"circle", new string[]{"colour", "int"} },
-			{"rectangle", new string[]{"colour", "int", "int"} },
-			{"square", new string[]{"colour", "int"} },
-			{"triangle", new string[]{"colour", "point", "point", "point"} },
-			{"polygon", new string[]{"colour", "point"} },
-			{"colour", new string[]{"string"} }
-		};
+		private string[] commands = { "drawto", "moveto", "circle", "rectangle", "square", "triangle", "polygon" };
 
 		public string[] SplitUserInput(string userInput)
 		{
@@ -50,78 +40,174 @@ namespace GraphicalProgrammingLanguage
 		public bool ValidateCommand(int lineNumber, string commandString, string[] commandParameters, out string errorMessage)
 		{
 			// Check whether the command is valid
-			if (!acceptedCommands.ContainsKey(commandString.ToLower()))
+			if(!Array.Exists(commands, command => command == commandString.ToLower()))
 			{
+				// The command is not recognised. This could mean the user is trying to perform another programming action and needs to be checked.
 				errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
 				return false;
 			}
 
-			// Get the parameters for the given command
-			string[] expectedParameters = acceptedCommands[commandString.ToLower()];
-
-			// Check whether the right number of parameters have been passed
-			if(!expectedParameters.Length.Equals(commandParameters.Length) && commandString.ToLower() != "polygon")
+			// If the command is rectangle
+			if(commandString.ToLower() == "moveto")
 			{
-				errorMessage = commandString + " expects " + expectedParameters.Length + " parameters to be passed.";
-				return false;
-			}
-
-			// Loop through the parameters checking that the user has inputted the correct object type
-			for(int i = 0; i < commandParameters.Length; i++)
-			{
-				var userInputtedParameter = commandParameters[i].Trim();
-				var expectedParameter = expectedParameters[i];
-
-				if(expectedParameter == "int")
+				if(commandParameters.Length != 2)
 				{
-					int throwAwayVariable;
-					if (!int.TryParse(userInputtedParameter, out throwAwayVariable))
-					{
-						errorMessage = userInputtedParameter + " must be an integer.";
-						return false;
-					}
+					// Check the correct number of parameters are passed
+					errorMessage = "MoveTo expects 2 parameters to be passed.";
+					return false;
 				}
-				else if(expectedParameter == "string")
+				else if (!Regex.IsMatch(commandParameters[0], "^[0-9]+$"))
 				{
-					if(!Regex.IsMatch(userInputtedParameter, "^[a-zA-Z]+$"))
-					{
-						errorMessage = userInputtedParameter + " must be a string.";
-						return false;
-					}
+					// Check the second parameter passed is a number
+					errorMessage = "The first parameter " + commandParameters[0] + " must be an integer.";
+					return false;
 				}
-				else if(expectedParameter == "colour")
+				else if (!Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
 				{
-					if (!Color.FromName(userInputtedParameter).IsKnownColor)
-					{
-						errorMessage = userInputtedParameter + " is not a known colour.";
-						return false;
-					}
+					// Check the second parameter passed is a number
+					errorMessage = "The second parameter " + commandParameters[1] + " must be an integer.";
+					return false;
 				}
-				else if(expectedParameter == "point")
+				else
 				{
-					string[] points = userInputtedParameter.Split(' ');
-					int throwAwayVariable;
-
-					if (points.Length != 2)
-					{
-						errorMessage = "You must enter two points sepearted by a space. Each point combination is separated by a command. " +
-							userInputtedParameter + " is invalid.";
-						return false;
-					}
-					else if (!int.TryParse(points[0], out throwAwayVariable)){
-						errorMessage = points[0] + " point must be an integer.";
-						return false;
-					}
-					else if (!int.TryParse(points[1], out throwAwayVariable))
-					{
-						errorMessage = points[1] + " must be an integer in points '" + userInputtedParameter + "'";
-						return false;
-					}
+					// The moveto has been entered correctly
+					errorMessage = "";
+					return true;
 				}
 			}
+			else if(commandString.ToLower() == "circle")
+			{
+				if (commandParameters.Length != 2)
+				{
+					// Check the correct number of parameters are passed
+					errorMessage = "Circle expects 2 parameters to be passed.";
+					return false;
+				}
+				else if (!Color.FromName(commandParameters[0]).IsKnownColor)
+				{
+					// Check that the first parameter passed is a valid colour.
+					errorMessage = "The first parameter " + commandParameters[0] + " must be a known colour.";
+					return false;
+				}
+				else if (!Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					// Check the second parameter passed is a number
+					errorMessage = "The second parameter " + commandParameters[1] + " must be an integer.";
+					return false;
+				}
+				else
+				{
+					// The circle has been entered correctly
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "rectangle")
+			{
+				if(commandParameters.Length != 3)
+				{
+					// Check the correct number of parameters are passed
+					errorMessage = "Rectangle expects 3 parameters to be passed.";
+					return false;
+				}
+				else if(!Color.FromName(commandParameters[0]).IsKnownColor)
+				{
+					// Check that the first parameter passed is a valid colour.
+					errorMessage = "The first parameter " + commandParameters[0] + " must be a known colour.";
+					return false;
+				}
+				else if(!Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					// Check the second parameter passed is a number
+					errorMessage = "The second parameter " + commandParameters[1] + " must be an integer.";
+					return false;
+				}
+				else if(!Regex.IsMatch(commandParameters[2], "^[0-9]+$"))
+				{
+					// Check the third parameter passed is a number
+					errorMessage = "The third parameter " + commandParameters[2] + " must be an integer.";
+					return false;
+				}
+				else
+				{
+					// The rectangle has been entered correctly
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if (commandString.ToLower() == "square")
+			{
+				if (commandParameters.Length != 2)
+				{
+					// Check the correct number of parameters are passed
+					errorMessage = "Square expects 2 parameters to be passed.";
+					return false;
+				}
+				else if (!Color.FromName(commandParameters[0]).IsKnownColor)
+				{
+					// Check that the first parameter passed is a valid colour.
+					errorMessage = "The first parameter " + commandParameters[0] + " must be a known colour.";
+					return false;
+				}
+				else if (!Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					// Check the second parameter passed is a number
+					errorMessage = "The second parameter " + commandParameters[1] + " must be an integer.";
+					return false;
+				}
+				else
+				{
+					// The square has been entered correctly
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if (commandString.ToLower() == "triangle")
+			{
+				if (commandParameters.Length != 4)
+				{
+					// Check the correct number of parameters are passed
+					errorMessage = "Triangle expects 4 parameters to be passed.";
+					return false;
+				}
+				else if (!Color.FromName(commandParameters[0]).IsKnownColor)
+				{
+					// Check that the first parameter passed is a valid colour.
+					errorMessage = "The first parameter " + commandParameters[0] + " must be a known colour.";
+					return false;
+				}
+				else
+				{
+					for (int i = 1; i < 3; i++)
+					{
+						string[] trianglePoints = commandParameters[i].Split(' ');
 
-			errorMessage = "";
-			return true;
+						if (trianglePoints.Length != 2)
+						{
+							errorMessage = "Points " + commandParameters[1] + " must have two points separated by a space.";
+							return false;
+						}
+						else if (!Regex.IsMatch(trianglePoints[0].Trim(), "^[0-9]+$"))
+						{
+							errorMessage = "Points " + trianglePoints[0] + " must be an integer at " + commandParameters[i];
+							return false;
+						}
+						else if (!Regex.IsMatch(trianglePoints[1].Trim(), "^[0-9]+$"))
+						{
+							errorMessage = "Points " + trianglePoints[1] + " must be an integer at " + commandParameters[i];
+							return false;
+						}
+					}
+
+					errorMessage = "";
+					return true;
+				}
+			} 
+			else
+			{
+				errorMessage = "";
+				return true;
+			}
 		}
 
 		public bool ExecuteCommand(ArrayList shapeCommands, string commandString, string[] commandParameters)
