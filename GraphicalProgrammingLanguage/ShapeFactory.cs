@@ -28,6 +28,10 @@ namespace GraphicalProgrammingLanguage
 			{
 				return new Triangle();
 			}
+			else if(shapeType == "POLYGON")
+			{
+				return new Polygon();
+			}
 			else
 			{
 				return new Rectangle();

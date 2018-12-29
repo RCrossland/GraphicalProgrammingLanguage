@@ -81,7 +81,39 @@ namespace GraphicalProgrammingLanguageTests
 			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
 			bool expected = false;
 
-			Assert.AreEqual("The second parameter parameter1 must be an integer.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual("'parameter1' must be an integer.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
+		}
+
+		[TestMethod]
+		public void Pass_Invalid_Paramter_Type_Colour()
+		{
+			Command command = new Command();
+
+			string commandString = "Circle";
+			string[] parameters = { "invalid", "1" };
+
+			string errorMessage;
+			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
+			bool expected = false;
+
+			Assert.AreEqual("'invalid' is not a known colour.", errorMessage, "The wrong error message was returned.");
+			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
+		}
+
+		[TestMethod]
+		public void Pass_Invalid_Parameter_Type_Point()
+		{
+			Command command = new Command();
+
+			string commandString = "Triangle";
+			string[] parameters = { "red", "10 10", "20 20", "30 invalid" };
+
+			string errorMessage;
+			bool actual = command.ValidateCommand(1, commandString, parameters, out errorMessage);
+			bool expected = false;
+
+			Assert.AreEqual("Points 'invalid' must be an integer at '30 invalid'.", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 	}
