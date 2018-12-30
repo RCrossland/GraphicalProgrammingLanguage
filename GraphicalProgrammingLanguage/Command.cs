@@ -227,13 +227,13 @@ namespace GraphicalProgrammingLanguage
 					errorMessage = "MoveTo expects 2 parameters to be passed.";
 					return false;
 				}
-				else if (!Regex.IsMatch(commandParameters[0], "^[0-9]+$"))
+				else if (!ValidateInteger(commandParameters[0], out errorMessage))
 				{
 					// Check the second parameter passed is a number
 					errorMessage = "The first parameter " + commandParameters[0] + " must be an integer.";
 					return false;
 				}
-				else if (!Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				else if (!ValidateInteger(commandParameters[1], out errorMessage))
 				{
 					// Check the second parameter passed is a number
 					errorMessage = "The second parameter " + commandParameters[1] + " must be an integer.";
@@ -419,8 +419,18 @@ namespace GraphicalProgrammingLanguage
 			}
 			else
 			{
+				if (variables.ContainsKey(numberParamter))
+				{
+					ValidateInteger(variables[numberParamter], out errorMessage);
+
+					errorMessage = "";
+					return true;
+				}
+				else
+				{
 				errorMessage = "'" + numberParamter + "' must be an integer.";
 				return false;
+				}
 			}
 		}
 
@@ -440,6 +450,14 @@ namespace GraphicalProgrammingLanguage
 
 		public bool ValidatePoint(string pointParameter, out string errorMessage)
 		{
+			if (variables.ContainsKey(pointParameter))
+			{
+				ValidateInteger(variables[pointParameter], out errorMessage);
+
+				errorMessage = "";
+				return true;
+			}
+
 			string[] points = pointParameter.Split(' ');
 
 			if (points.Length != 2)
@@ -459,8 +477,8 @@ namespace GraphicalProgrammingLanguage
 			}
 			else
 			{
-				errorMessage = "";
-				return true;
+					errorMessage = "";
+					return true;
 			}
 		}
 
@@ -604,10 +622,31 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(commandString == "RECTANGLE")
 			{
+				int pointX = 0;
+				int pointY = 0;
+
+				if (Regex.IsMatch(commandParameters[1], "^[0-9]+$") && Regex.IsMatch(commandParameters[2], "^[0-9]+$"))
+				{
+					pointX = Int32.Parse(commandParameters[1]);
+					pointY = Int32.Parse(commandParameters[2]);
+				}
+				else if (variables.ContainsKey(commandParameters[1]) && variables.ContainsKey(commandParameters[2]))
+				{
+					if (Regex.IsMatch(variables[commandParameters[1]], "^[0-9]+$") && 
+						Regex.IsMatch(variables[commandParameters[2]], "^[0-9]+$"))
+					{
+						pointX = Int32.Parse(variables[commandParameters[1]]);
+						pointY = Int32.Parse(variables[commandParameters[2]]);
+					}
+					else
+					{
+						return false;
+					}
+				}
+
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
-				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, 
-					Int32.Parse(commandParameters[1]), Int32.Parse(commandParameters[2]));
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, pointX, pointY);
 
 				// Add the shape to the ArrayList
 				shapeCommands.Add(shape);
@@ -616,11 +655,27 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(commandString == "SQUARE")
 			{
+				int point = 0;
+
+				if(Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					point = Int32.Parse(commandParameters[1]);
+				}
+				else if (variables.ContainsKey(commandParameters[1]))
+				{
+					if (Regex.IsMatch(variables[commandParameters[1]], "^[0-9]+$"))
+					{
+						point = Int32.Parse(variables[commandParameters[1]]);
+					}
+					else
+					{
+						return false;
+					}
+				}
 
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
-				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY,
-					Int32.Parse(commandParameters[1]), Int32.Parse(commandParameters[1]));
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, point, point);
 
 				// Add the shape to the ArrayList
 				shapeCommands.Add(shape);
@@ -629,10 +684,27 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(commandString == "CIRCLE")
 			{
+				int point = 0;
+
+				if (Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					point = Int32.Parse(commandParameters[1]);
+				}
+				else if (variables.ContainsKey(commandParameters[1]))
+				{
+					if (Regex.IsMatch(variables[commandParameters[1]], "^[0-9]+$"))
+					{
+						point = Int32.Parse(variables[commandParameters[1]]);
+					}
+					else
+					{
+						return false;
+					}
+				}
+
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
-				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY,
-					Int32.Parse(commandParameters[1]));
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, point);
 
 				// Add the shape to the ArrayList
 				shapeCommands.Add(shape);
@@ -641,36 +713,140 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(commandString == "MOVETO" && penUp)
 			{
-				currentX = Int32.Parse(commandParameters[0]);
-				currentY = Int32.Parse(commandParameters[1]);
+				int pointX = 0;
+				int pointY = 0;
+
+				if (Regex.IsMatch(commandParameters[0], "^[0-9]+$") && Regex.IsMatch(commandParameters[1], "^[0-9]+$"))
+				{
+					pointX = Int32.Parse(commandParameters[0]);
+					pointY = Int32.Parse(commandParameters[1]);
+				}
+				else if (variables.ContainsKey(commandParameters[0]) && variables.ContainsKey(commandParameters[1]))
+				{
+					if (Regex.IsMatch(variables[commandParameters[0]], "^[0-9]+$") &&
+						Regex.IsMatch(variables[commandParameters[1]], "^[0-9]+$"))
+					{
+						pointX = Int32.Parse(variables[commandParameters[0]]);
+						pointY = Int32.Parse(variables[commandParameters[1]]);
+					}
+					else
+					{
+						return false;
+					}
+				}
+
+				currentX = pointX;
+				currentY = pointY;
 
 				return true;
 			}
 			else if(commandString == "MOVETO" && !penUp)
 			{
+				int pointX = 0;
+				int pointY = 0;
+
+				if (Regex.IsMatch(commandParameters[1], "^[0-9]+$") && Regex.IsMatch(commandParameters[2], "^[0-9]+$"))
+				{
+					pointX = Int32.Parse(commandParameters[1]);
+					pointY = Int32.Parse(commandParameters[2]);
+				}
+				else if (variables.ContainsKey(commandParameters[1]) && variables.ContainsKey(commandParameters[2]))
+				{
+					if (Regex.IsMatch(variables[commandParameters[1]], "^[0-9]+$") &&
+						Regex.IsMatch(variables[commandParameters[2]], "^[0-9]+$"))
+					{
+						pointX = Int32.Parse(variables[commandParameters[1]]);
+						pointY = Int32.Parse(variables[commandParameters[2]]);
+					}
+					else
+					{
+						return false;
+					}
+				}
+
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
-				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, Int32.Parse(commandParameters[1]),
-					Int32.Parse(commandParameters[2]));
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, pointX, pointY);
 
 				shapeCommands.Add(shape);
 
-				currentX = Int32.Parse(commandParameters[1]);
-				currentY = Int32.Parse(commandParameters[2]);
+				currentX = pointX;
+				currentY = pointY;
 
 				return true;
 			}
 			else if(commandString == "TRIANGLE")
 			{
-				string[] point1 = commandParameters[1].Split(' ');
-				string[] point2 = commandParameters[2].Split(' ');
-				string[] point3 = commandParameters[3].Split(' ');
+				int point1X, point1Y, point2X, point2Y, point3X, point3Y = 0;
+
+				if (variables.ContainsKey(commandParameters[1]))
+				{
+					string[] points1 = variables[commandParameters[1]].Split(' ');
+
+					if(!Regex.IsMatch(points1[0], "^[0-9]+$") || !Regex.IsMatch(points1[1], "^[0-9]+$")){
+						return false;
+					}
+					else
+					{
+						point1X = Int32.Parse(points1[0]);
+						point1Y = Int32.Parse(points1[1]);
+					}
+				}
+				else
+				{
+					string[] point1 = commandParameters[1].Split(' ');
+					point1X = Int32.Parse(point1[0]);
+					point1Y = Int32.Parse(point1[1]);
+				}
+
+
+				if (variables.ContainsKey(commandParameters[2]))
+				{
+					string[] points2 = variables[commandParameters[2]].Split(' ');
+
+					if (!Regex.IsMatch(points2[0], "^[0-9]+$") || !Regex.IsMatch(points2[1], "^[0-9]+$"))
+					{
+						return false;
+					}
+					else
+					{
+						point2X = Int32.Parse(points2[0]);
+						point2Y = Int32.Parse(points2[1]);
+					}
+				}
+				else
+				{
+					string[] points2 = commandParameters[2].Split(' ');
+
+					point2X = Int32.Parse(points2[0]);
+					point2Y = Int32.Parse(points2[1]);
+				}
+
+				if (variables.ContainsKey(commandParameters[3]))
+				{
+					string[] points3 = variables[commandParameters[3]].Split(' ');
+
+					if (!Regex.IsMatch(points3[0], "^[0-9]+$") || !Regex.IsMatch(points3[1], "^[0-9]+$"))
+					{
+						return false;
+					}
+					else
+					{
+						point3X = Int32.Parse(points3[0]);
+						point3Y = Int32.Parse(points3[1]);
+					}
+				}
+				else
+				{
+					string[] points3 = commandParameters[3].Split(' ');
+
+					point3X = Int32.Parse(points3[0]);
+					point3Y = Int32.Parse(points3[1]);
+				}
 
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
-				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY,
-					Int32.Parse(point1[0]), Int32.Parse(point1[1]), Int32.Parse(point2[0]), Int32.Parse(point2[1]),
-					Int32.Parse(point3[0]), Int32.Parse(point3[1]));
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, point1X, point1Y, point2X, point2Y, point3X, point3Y);
 
 				// Add the shape to the ArrayList
 				shapeCommands.Add(shape);
@@ -688,11 +864,33 @@ namespace GraphicalProgrammingLanguage
 				// Cycle through the new array setting each colour to a new nteger array
 				for(int i = 0; i < pointsList.Length; i++)
 				{
-					// Split the pointsList based on spaces
-					string[] pointsSplit = pointsList[i].Split(' ');
+					int pointX = 0;
+					int pointY = 0;
 
-					integerPoints.Add(Int32.Parse(pointsSplit[0]));
-					integerPoints.Add(Int32.Parse(pointsSplit[1]));
+					if (variables.ContainsKey(pointsList[i]))
+					{
+						string[] pointsSplit = variables[pointsList[i]].Split(' ').ToArray();
+
+						if(Regex.IsMatch(pointsSplit[0], "^[0-9]+$") && Regex.IsMatch(pointsSplit[1], "^[0-9]+$"))
+						{
+							pointX = Int32.Parse(pointsSplit[0]);
+							pointY = Int32.Parse(pointsSplit[1]);
+						} 
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						string[] pointsSplit = pointsList[i].Split(' ').ToArray();
+
+						pointX = Int32.Parse(pointsSplit[0]);
+						pointY = Int32.Parse(pointsSplit[1]);
+					}
+
+					integerPoints.Add(pointX);
+					integerPoints.Add(pointY);
 				}
 
 				Shape shape = shapeFactory.GetShape(commandString);
