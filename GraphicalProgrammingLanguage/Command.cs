@@ -128,7 +128,7 @@ namespace GraphicalProgrammingLanguage
 					// Validate the second parameter is a integer
 					return false;
 				}
-				else if(!Array.Exists(commands, command => command == commandParameters[1]))
+				else if(!Array.Exists(commands, command => command == commandParameters[1].ToLower()))
 				{
 					// Check the specified command is valid
 					errorMessage = commandParameters[1] + " is an invalid command. Please see 'help' for a list of commands.";
@@ -526,13 +526,31 @@ namespace GraphicalProgrammingLanguage
 					if (String.Equals(shapeCommandString.ToUpper(), "SQUARE") || String.Equals(shapeCommandString.ToUpper(), "CIRCLE"))
 					{
 						int parameterValue;
-						if (String.Equals(commandOperator, "+"))
+						int point = 0;
+
+						if (variables.ContainsKey(commandParameters[4]))
 						{
-							parameterValue = Int32.Parse(commandParameters[4]) * (i + 1);
+							if(Regex.IsMatch(variables[commandParameters[4]], "^[0-9]+$"))
+							{
+								point = Int32.Parse(variables[commandParameters[4]]);
+							}
+							else
+							{
+								return false;
+							}
 						}
 						else
 						{
-							parameterValue = Int32.Parse(commandParameters[4]) / (i + 1);
+							point = Int32.Parse(commandParameters[4]);
+						}
+
+						if (String.Equals(commandOperator, "+"))
+						{
+							parameterValue = point * (i + 1);
+						}
+						else
+						{
+							parameterValue = point / (i + 1);
 						}
 
 						List<string> shapeCommandParameters = new List<String>() { commandParameters[2], parameterValue.ToString() };
@@ -541,17 +559,51 @@ namespace GraphicalProgrammingLanguage
 					}
 					else if(String.Equals(shapeCommandString.ToUpper(), "RECTANGLE"))
 					{
+						int pointX = 0;
+						int pointY = 0;
 						int parameterValueX, parameterValueY;
 
-						if(String.Equals(commandOperator, "+"))
+						if (variables.ContainsKey(commandParameters[4]))
 						{
-							parameterValueX = Int32.Parse(commandParameters[4]) * (i + 1);
-							parameterValueY = Int32.Parse(commandParameters[5]) * (i + 1);
+							if(Regex.IsMatch(variables[commandParameters[4]], "^[0-9]+$"))
+							{
+								pointX = Int32.Parse(variables[commandParameters[4]]);
+							} 
+							else
+							{
+								return false;
+							}
 						}
 						else
 						{
-							parameterValueX = Int32.Parse(commandParameters[4]) / (i + 1);
-							parameterValueY = Int32.Parse(commandParameters[5]) / (i + 1);
+							pointX = Int32.Parse(commandParameters[4]);
+						}
+
+						if (variables.ContainsKey(commandParameters[5]))
+						{
+							if (Regex.IsMatch(variables[commandParameters[5]], "^[0-9]+$"))
+							{
+								pointY = Int32.Parse(variables[commandParameters[5]]);
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							pointY = Int32.Parse(commandParameters[5]);
+						}
+
+						if (String.Equals(commandOperator, "+"))
+						{
+							parameterValueX = pointX * (i + 1);
+							parameterValueY = pointY * (i + 1);
+						}
+						else
+						{
+							parameterValueX = pointX / (i + 1);
+							parameterValueY = pointY / (i + 1);
 						}
 
 						List<string> shapeCommandParameters = new List<String>() { commandParameters[2], parameterValueX.ToString(), parameterValueY.ToString() };
@@ -561,10 +613,38 @@ namespace GraphicalProgrammingLanguage
 					else if(String.Equals(shapeCommandString.ToUpper(), "TRIANGLE"))
 					{
 						int parameterPoint1X, parameterPoint1Y, parameterPoint2X, parameterPoint2Y, parameterPoint3X, parameterPoint3Y;
+						string points1, points2, points3;
 
-						string[] parameterPoints1 = commandParameters[4].Split(' ').ToArray();
-						string[] parameterPoints2 = commandParameters[5].Split(' ').ToArray();
-						string[] parameterPoints3 = commandParameters[6].Split(' ').ToArray();
+						if (variables.ContainsKey(commandParameters[4]))
+						{
+							points1 = variables[commandParameters[4]];
+						}
+						else
+						{
+							points1 = commandParameters[4];
+						}
+
+						if (variables.ContainsKey(commandParameters[5]))
+						{
+							points2 = variables[commandParameters[5]];
+						}
+						else
+						{
+							points2 = commandParameters[5];
+						}
+
+						if (variables.ContainsKey(commandParameters[6]))
+						{
+							points3 = variables[commandParameters[6]];
+						}
+						else
+						{
+							points3 = commandParameters[6];
+						}
+
+						string[] parameterPoints1 = points1.Split(' ').ToArray();
+						string[] parameterPoints2 = points2.Split(' ').ToArray();
+						string[] parameterPoints3 = points3.Split(' ').ToArray();
 
 						if (String.Equals(commandOperator, "+"))
 						{
@@ -597,7 +677,18 @@ namespace GraphicalProgrammingLanguage
 
 						for(int d = 0; d < parameterPoints.Length; d++)
 						{
-							string[] splitPoints = parameterPoints[d].Split(' ').ToArray();
+							string points;
+
+							if (variables.ContainsKey(parameterPoints[d]))
+							{
+								points = variables[parameterPoints[d]];
+							}
+							else
+							{
+								points = parameterPoints[d];
+							}
+
+							string[] splitPoints = points.Split(' ').ToArray();
 							int splitPointX, splitPointY;
 
 							if(String.Equals(commandParameters[3], "+"))
