@@ -19,9 +19,12 @@ namespace GraphicalProgrammingLanguage
 			currentY = 0;
 		}
 
-		private string[] commands = { "run", "penup", "pendown", "drawto", "moveto", "circle", "rectangle", "square", "triangle", "polygon" };
+		private string[] commands = { "run", "penup", "pendown", "drawto", "moveto", "repeat",
+			"circle", "rectangle", "square", "triangle", "polygon" };
 
 		private bool penUp = false;
+
+		Dictionary<string, string> variables = new Dictionary<string, string>();
 
 		public string[] SplitUserInput(string userInput)
 		{
@@ -45,12 +48,161 @@ namespace GraphicalProgrammingLanguage
 			// Check whether the command is valid
 			if(!Array.Exists(commands, command => command == commandString.ToLower()))
 			{
-				// The command is not recognised. This could mean the user is trying to perform another programming action and needs to be checked.
-				errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
-				return false;
+				if (commandString.Contains("="))
+				{
+					string[] variableSplit = commandString.Trim().Split('=').ToArray();
+					string variableName = variableSplit[0];
+
+					if(commandParameters.Length > 1)
+					{
+						errorMessage = "You've defined more than one value to be stored as a variable.";
+						return false;
+					}
+					else if(commandParameters.Length < 1 && String.Equals(variableSplit[1], ""))
+					{
+						errorMessage = "You haven't defined a value to store with the variable.";
+						return false;
+					}
+					else if (variables.ContainsKey(variableName))
+					{
+						variables[variableName] = variableSplit[1].Trim();
+
+						errorMessage = "";
+						return true;
+					}
+					else
+					{
+						variables.Add(variableName, variableSplit[1].Trim());
+
+						errorMessage = "";
+						return true;
+					}
+				}
+				else if (commandParameters[0].Contains("="))
+				{
+					if (String.IsNullOrWhiteSpace(commandString))
+					{
+						errorMessage = "You must define a variable name.";
+						return false;
+					}
+
+					string[] splitVariable = commandParameters[0].Split('=');
+
+					if (String.IsNullOrWhiteSpace(splitVariable[1]))
+					{
+						errorMessage = "You must define a value for the variable.";
+						return false;
+					}
+					else if(variables.ContainsKey(commandString))
+					{
+						variables[commandString] = splitVariable[1].Trim();
+
+						errorMessage = "";
+						return true;
+					}
+					else
+					{
+						variables.Add(commandString, splitVariable[1].Trim());
+
+						errorMessage = "";
+						return true;
+					}
+				}
+				else
+				{
+					// The command is not recognised. This could mean the user is trying to perform another programming action and needs to be checked.
+					errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
+					return false;
+				}
 			}
 
-			if(commandString.ToLower() == "run")
+			if(commandString.ToLower() == "repeat")
+			{
+				if (commandParameters.Length < 5)
+				{
+					errorMessage = "Repeat command must be in the format. 'Repeat <no of repeats>, <shape>, <colour>, <less/greater>, <incrementer>'";
+					return false;
+				}
+				else if(!ValidateInteger(commandParameters[0], out errorMessage))
+				{
+					// Validate the second parameter is a integer
+					return false;
+				}
+				else if(!Array.Exists(commands, command => command == commandParameters[1]))
+				{
+					// Check the specified command is valid
+					errorMessage = commandParameters[1] + " is an invalid command. Please see 'help' for a list of commands.";
+					return false;
+				}
+				else if(!ValidateColour(commandParameters[2], out errorMessage))
+				{
+					// Validate the third parameter is a valid colour
+					return false;
+				}
+				else if(!Regex.IsMatch(commandParameters[3], "^[+-]$"))
+				{
+					// The repeat by conditional is not a + or -
+					errorMessage = "The third parameter must instruct to repeat by + or - times.";
+					return false;
+				}
+				else if(!ValidateInteger(commandParameters[4], out errorMessage) && !String.Equals(commandParameters[1].ToLower(), "polygon")
+					&& !String.Equals(commandParameters[1].ToLower(), "triangle")){
+					// Validate the parameter to check for an integer
+					return false;
+				}
+				else
+				{
+					// If the user has specified a shape that requires more parameters
+					if(String.Equals(commandParameters[1].ToLower(), "rectangle"))
+					{
+						if(commandParameters.Length != 6)
+						{
+							errorMessage = "Repeat command must be in the format. 'Repeat <no of repeats>, <shape>, <colour>, <less/greater>, <incrementer_X>, <incrementer_Y>'";
+							return false;
+						}
+						else if(!ValidateInteger(commandParameters[5], out errorMessage))
+						{
+							return false;
+						}
+					}
+					else if(String.Equals(commandParameters[1].ToLower(), "triangle"))
+					{
+						if(commandParameters.Length != 7)
+						{
+							errorMessage = "Repeat command must be in the format. 'Repeat <no of repeats>, <shape>, <colour>, <less/greater>, <point>, <point>, <point>'";
+							return false;
+						}
+						else if(!ValidatePoint(commandParameters[4], out errorMessage) || !ValidatePoint(commandParameters[5], out errorMessage) ||
+							!ValidatePoint(commandParameters[6], out errorMessage)){
+							return false;
+						}
+					}
+					else if(String.Equals(commandParameters[1].ToLower(), "polygon"))
+					{
+						if(commandParameters.Length < 7)
+						{
+							errorMessage = "Repeat command must be in the format. 'Repeat <no of repeats>, <shape>, <colour>, <less/greater>, <point>, <point>, <point>'";
+							return false;
+						}
+						else
+						{
+							string[] polygonPoints = commandParameters.Skip(4).ToArray();
+
+							for(int i = 0; i < polygonPoints.Length; i++)
+							{
+								if(!ValidatePoint(polygonPoints[i], out errorMessage))
+								{
+									return false;
+								}
+							}
+						}
+					}
+
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "run")
 			{
 				if(commandParameters.Length != 1)
 				{
@@ -345,6 +497,108 @@ namespace GraphicalProgrammingLanguage
 			else if(commandString == "PENDOWN")
 			{
 				penUp = false;
+
+				return true;
+			}
+			else if(commandString == "REPEAT")
+			{
+				string shapeCommandString = commandParameters[1];
+				string commandOperator = commandParameters[3];
+				for(int i = 0; i < Int32.Parse(commandParameters[0]); i++){
+					if (String.Equals(shapeCommandString.ToUpper(), "SQUARE") || String.Equals(shapeCommandString.ToUpper(), "CIRCLE"))
+					{
+						int parameterValue;
+						if (String.Equals(commandOperator, "+"))
+						{
+							parameterValue = Int32.Parse(commandParameters[4]) * (i + 1);
+						}
+						else
+						{
+							parameterValue = Int32.Parse(commandParameters[4]) / (i + 1);
+						}
+
+						List<string> shapeCommandParameters = new List<String>() { commandParameters[2], parameterValue.ToString() };
+
+						ExecuteCommand(shapeCommands, shapeCommandString, shapeCommandParameters.ToArray());
+					}
+					else if(String.Equals(shapeCommandString.ToUpper(), "RECTANGLE"))
+					{
+						int parameterValueX, parameterValueY;
+
+						if(String.Equals(commandOperator, "+"))
+						{
+							parameterValueX = Int32.Parse(commandParameters[4]) * (i + 1);
+							parameterValueY = Int32.Parse(commandParameters[5]) * (i + 1);
+						}
+						else
+						{
+							parameterValueX = Int32.Parse(commandParameters[4]) / (i + 1);
+							parameterValueY = Int32.Parse(commandParameters[5]) / (i + 1);
+						}
+
+						List<string> shapeCommandParameters = new List<String>() { commandParameters[2], parameterValueX.ToString(), parameterValueY.ToString() };
+
+						ExecuteCommand(shapeCommands, shapeCommandString, shapeCommandParameters.ToArray());
+					}
+					else if(String.Equals(shapeCommandString.ToUpper(), "TRIANGLE"))
+					{
+						int parameterPoint1X, parameterPoint1Y, parameterPoint2X, parameterPoint2Y, parameterPoint3X, parameterPoint3Y;
+
+						string[] parameterPoints1 = commandParameters[4].Split(' ').ToArray();
+						string[] parameterPoints2 = commandParameters[5].Split(' ').ToArray();
+						string[] parameterPoints3 = commandParameters[6].Split(' ').ToArray();
+
+						if (String.Equals(commandOperator, "+"))
+						{
+							parameterPoint1X = Int32.Parse(parameterPoints1[0]);
+							parameterPoint1Y = Int32.Parse(parameterPoints1[1]);
+							parameterPoint2X = Int32.Parse(parameterPoints2[0]) * (i + 1);
+							parameterPoint2Y = Int32.Parse(parameterPoints2[1]) * (i + 1);
+							parameterPoint3X = Int32.Parse(parameterPoints3[0]) * (i + 1);
+							parameterPoint3Y = Int32.Parse(parameterPoints3[1]) * (i + 1);
+						}
+						else
+						{
+							parameterPoint1X = Int32.Parse(parameterPoints1[0]);
+							parameterPoint1Y = Int32.Parse(parameterPoints1[1]);
+							parameterPoint2X = Int32.Parse(parameterPoints2[0]) / (i + 1);
+							parameterPoint2Y = Int32.Parse(parameterPoints2[1]) / (i + 1);
+							parameterPoint3X = Int32.Parse(parameterPoints3[0]) / (i + 1);
+							parameterPoint3Y = Int32.Parse(parameterPoints3[1]) / (i + 1);
+						}
+
+						List<string> shapeCommandParameters = new List<String>() { commandParameters[2], (parameterPoint1X + " " + parameterPoint1Y),
+						(parameterPoint2X + " " + parameterPoint2Y), (parameterPoint3X + " " + parameterPoint3Y)};
+
+						ExecuteCommand(shapeCommands, shapeCommandString, shapeCommandParameters.ToArray());
+					}
+					else if(String.Equals(shapeCommandString.ToUpper(), "POLYGON"))
+					{
+						string[] parameterPoints = commandParameters.Skip(4).ToArray();
+						List<string> shapeCommandParameters = new List<String>() { commandParameters[2] };
+
+						for(int d = 0; d < parameterPoints.Length; d++)
+						{
+							string[] splitPoints = parameterPoints[d].Split(' ').ToArray();
+							int splitPointX, splitPointY;
+
+							if(String.Equals(commandParameters[3], "+"))
+							{
+								splitPointX = Int32.Parse(splitPoints[0]) * (i + 1);
+								splitPointY = Int32.Parse(splitPoints[1]) * (i + 1);
+							}
+							else
+							{
+								splitPointX = Int32.Parse(splitPoints[0]) / (i + 1);
+								splitPointY = Int32.Parse(splitPoints[1]) / (i + 1);
+							}
+
+							shapeCommandParameters.Add(splitPointX.ToString() + " " + splitPointY.ToString());
+						}
+
+						ExecuteCommand(shapeCommands, shapeCommandString, shapeCommandParameters.ToArray());
+					}
+				}
 
 				return true;
 			}
