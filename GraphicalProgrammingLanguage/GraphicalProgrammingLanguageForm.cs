@@ -28,42 +28,46 @@ namespace GraphicalProgrammingLanguage
 			{
 				// Save the object of the textbox
 				TextBox singleLineInputTextBox = (sender as TextBox);
-				string[] splitUserInput = command.SplitUserInput(singleLineInputTextBox.Text);
 
-				string commandString = splitUserInput[0];
-				string[] commandParameters = command.SplitParameters(splitUserInput);
-
-				// Validate the command and hold the error message returned in a variable
-				string errorMessage;
-				bool validCommand = command.ValidateCommand(1, commandString, commandParameters, out errorMessage);
-
-				if (!validCommand)
+				if (!String.IsNullOrWhiteSpace(singleLineInputTextBox.Text))
 				{
-					// If the user has not entered a valid command
-					this.SingleLineOutput.SelectionColor = Color.Red;
-					this.SingleLineOutput.AppendText(errorMessage + "\n");
-					this.SingleLineOutput.ScrollToCaret();
-				}
-				else
-				{
-					if (commandString.ToLower() == "run")
+					string[] splitUserInput = command.SplitUserInput(singleLineInputTextBox.Text.Trim());
+
+					string commandString = splitUserInput[0];
+					string[] commandParameters = command.SplitParameters(splitUserInput);
+
+					// Validate the command and hold the error message returned in a variable
+					string errorMessage;
+					bool validCommand = command.ValidateCommand(1, commandString, commandParameters, out errorMessage);
+
+					if (!validCommand)
 					{
-						RunFileCommand(commandParameters[0]);
+						// If the user has not entered a valid command
+						this.SingleLineOutput.SelectionColor = Color.Red;
+						this.SingleLineOutput.AppendText(errorMessage + "\n");
+						this.SingleLineOutput.ScrollToCaret();
 					}
 					else
 					{
-						// Else if the user has entered a valid command
-						// Add the command to the textbox
-						this.SingleLineOutput.SelectionColor = Color.Green;
-						this.SingleLineOutput.AppendText(SingleLineInputTextbox.Text + "\n");
-						this.SingleLineOutput.ScrollToCaret();
-
-						// Set the TextBox value to be an empty string
-						singleLineInputTextBox.Text = "";
-
-						if (command.ExecuteCommand(shapes, commandString, commandParameters))
+						if (commandString.ToLower() == "run")
 						{
-							this.GraphicsPictureBox.Refresh();
+							RunFileCommand(commandParameters[0]);
+						}
+						else
+						{
+							// Else if the user has entered a valid command
+							// Add the command to the textbox
+							this.SingleLineOutput.SelectionColor = Color.Green;
+							this.SingleLineOutput.AppendText(SingleLineInputTextbox.Text.Trim() + "\n");
+							this.SingleLineOutput.ScrollToCaret();
+
+							// Set the TextBox value to be an empty string
+							singleLineInputTextBox.Text = "";
+
+							if (command.ExecuteCommand(shapes, commandString, commandParameters))
+							{
+								this.GraphicsPictureBox.Refresh();
+							}
 						}
 					}
 				}

@@ -104,10 +104,10 @@
 			// 
 			this.SingleLineOutput.BackColor = System.Drawing.Color.White;
 			this.SingleLineOutput.Enabled = false;
-			this.SingleLineOutput.Location = new System.Drawing.Point(19, 57);
+			this.SingleLineOutput.Location = new System.Drawing.Point(19, 97);
 			this.SingleLineOutput.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.SingleLineOutput.Name = "SingleLineOutput";
-			this.SingleLineOutput.Size = new System.Drawing.Size(623, 490);
+			this.SingleLineOutput.Size = new System.Drawing.Size(623, 450);
 			this.SingleLineOutput.TabIndex = 1;
 			this.SingleLineOutput.Text = "";
 			// 
@@ -115,10 +115,11 @@
 			// 
 			this.SingleLineInputTextbox.Location = new System.Drawing.Point(19, 18);
 			this.SingleLineInputTextbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+			this.SingleLineInputTextbox.Multiline = true;
 			this.SingleLineInputTextbox.Name = "SingleLineInputTextbox";
-			this.SingleLineInputTextbox.Size = new System.Drawing.Size(623, 22);
+			this.SingleLineInputTextbox.Size = new System.Drawing.Size(623, 67);
 			this.SingleLineInputTextbox.TabIndex = 0;
-			this.SingleLineInputTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SingleLineInputEnter);
+			this.SingleLineInputTextbox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SingleLineInputEnter);
 			// 
 			// MultiLineInputTab
 			// 
@@ -130,7 +131,7 @@
 			this.MultiLineInputTab.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.MultiLineInputTab.Name = "MultiLineInputTab";
 			this.MultiLineInputTab.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.MultiLineInputTab.Size = new System.Drawing.Size(671, 581);
+			this.MultiLineInputTab.Size = new System.Drawing.Size(671, 583);
 			this.MultiLineInputTab.TabIndex = 1;
 			this.MultiLineInputTab.Text = "Multi line Input";
 			this.MultiLineInputTab.UseVisualStyleBackColor = true;
@@ -138,7 +139,7 @@
 			// MultiLineInputSaveBtn
 			// 
 			this.MultiLineInputSaveBtn.Location = new System.Drawing.Point(128, 14);
-			this.MultiLineInputSaveBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.MultiLineInputSaveBtn.Margin = new System.Windows.Forms.Padding(4);
 			this.MultiLineInputSaveBtn.Name = "MultiLineInputSaveBtn";
 			this.MultiLineInputSaveBtn.Size = new System.Drawing.Size(100, 28);
 			this.MultiLineInputSaveBtn.TabIndex = 3;
@@ -149,7 +150,7 @@
 			// MultiLineInputLoadBtn
 			// 
 			this.MultiLineInputLoadBtn.Location = new System.Drawing.Point(20, 14);
-			this.MultiLineInputLoadBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.MultiLineInputLoadBtn.Margin = new System.Windows.Forms.Padding(4);
 			this.MultiLineInputLoadBtn.Name = "MultiLineInputLoadBtn";
 			this.MultiLineInputLoadBtn.Size = new System.Drawing.Size(100, 28);
 			this.MultiLineInputLoadBtn.TabIndex = 2;
@@ -160,7 +161,7 @@
 			// MultiLineInputRunBtn
 			// 
 			this.MultiLineInputRunBtn.Location = new System.Drawing.Point(557, 14);
-			this.MultiLineInputRunBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.MultiLineInputRunBtn.Margin = new System.Windows.Forms.Padding(4);
 			this.MultiLineInputRunBtn.Name = "MultiLineInputRunBtn";
 			this.MultiLineInputRunBtn.Size = new System.Drawing.Size(100, 28);
 			this.MultiLineInputRunBtn.TabIndex = 1;
@@ -170,7 +171,7 @@
 			// MultiLineInputTextBox
 			// 
 			this.MultiLineInputTextBox.Location = new System.Drawing.Point(20, 49);
-			this.MultiLineInputTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.MultiLineInputTextBox.Margin = new System.Windows.Forms.Padding(4);
 			this.MultiLineInputTextBox.Name = "MultiLineInputTextBox";
 			this.MultiLineInputTextBox.Size = new System.Drawing.Size(636, 472);
 			this.MultiLineInputTextBox.TabIndex = 0;
