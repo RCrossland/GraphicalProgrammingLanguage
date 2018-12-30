@@ -32,6 +32,10 @@ namespace GraphicalProgrammingLanguage
 			{
 				return new Polygon();
 			}
+			else if(shapeType == "MOVETO")
+			{
+				return new Line();
+			}
 			else
 			{
 				return new Rectangle();

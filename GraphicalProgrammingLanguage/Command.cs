@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,7 +19,9 @@ namespace GraphicalProgrammingLanguage
 			currentY = 0;
 		}
 
-		private string[] commands = { "drawto", "moveto", "circle", "rectangle", "square", "triangle", "polygon" };
+		private string[] commands = { "run", "penup", "pendown", "drawto", "moveto", "circle", "rectangle", "square", "triangle", "polygon" };
+
+		private bool penUp = false;
 
 		public string[] SplitUserInput(string userInput)
 		{
@@ -47,8 +50,24 @@ namespace GraphicalProgrammingLanguage
 				return false;
 			}
 
-			// If the command is rectangle
-			if(commandString.ToLower() == "moveto")
+			if(commandString.ToLower() == "run")
+			{
+				if(commandParameters.Length != 1)
+				{
+					errorMessage = "The run command must have a file path specified";
+					return false;
+				}
+				else if (!ValidateFile(commandParameters[0], out errorMessage))
+				{
+					return false;
+				}
+				else
+				{
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "moveto" && penUp)
 			{
 				if(commandParameters.Length != 2)
 				{
@@ -71,6 +90,31 @@ namespace GraphicalProgrammingLanguage
 				else
 				{
 					// The moveto has been entered correctly
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "moveto" && !penUp)
+			{
+				if(commandParameters.Length != 3)
+				{
+					errorMessage = "When the pen is down, MoveTo expects 3 parameters to be passed.";
+					return false;
+				}
+				else if(!ValidateColour(commandParameters[0], out errorMessage))
+				{
+					return false;
+				}
+				else if(!ValidateInteger(commandParameters[1], out errorMessage))
+				{
+					return false;
+				}
+				else if(!ValidateInteger(commandParameters[2], out errorMessage))
+				{
+					return false;
+				}
+				else
+				{
 					errorMessage = "";
 					return true;
 				}
@@ -248,7 +292,7 @@ namespace GraphicalProgrammingLanguage
 
 			if (points.Length != 2)
 			{
-				errorMessage = "Points " + points[1] + " must have two points separated by a space.";
+				errorMessage = "Points " + pointParameter + " must have two points separated by a space.";
 				return false;
 			}
 			else if (!Regex.IsMatch(points[0].Trim(), "^[0-9]+$"))
@@ -268,12 +312,43 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
+		public bool ValidateFile(string filePath, out string errorMessage)
+		{
+			if (Path.GetExtension(filePath) != ".txt")
+			{
+				errorMessage = "The file extension must be .txt";
+				return false;
+			}
+			else if (!File.Exists(filePath))
+			{
+				errorMessage = "The file " + filePath + " doesn't exist.";
+				return false;
+			}
+			else
+			{
+				errorMessage = "";
+				return true;
+			}
+		}
+
 		public bool ExecuteCommand(ArrayList shapeCommands, string commandString, string[] commandParameters)
 		{
 			ShapeFactory shapeFactory = new ShapeFactory();
 
 			commandString = commandString.ToUpper().Trim();
-			if(commandString == "RECTANGLE")
+			if(commandString == "PENUP")
+			{
+				penUp = true;
+
+				return true;
+			}
+			else if(commandString == "PENDOWN")
+			{
+				penUp = false;
+
+				return true;
+			}
+			else if(commandString == "RECTANGLE")
 			{
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
@@ -310,10 +385,24 @@ namespace GraphicalProgrammingLanguage
 
 				return true;
 			}
-			else if(commandString == "MOVETO")
+			else if(commandString == "MOVETO" && penUp)
 			{
 				currentX = Int32.Parse(commandParameters[0]);
 				currentY = Int32.Parse(commandParameters[1]);
+
+				return true;
+			}
+			else if(commandString == "MOVETO" && !penUp)
+			{
+				// Get the shape and set the values
+				Shape shape = shapeFactory.GetShape(commandString);
+				shape.Set(Color.FromName(commandParameters[0]), currentX, currentY, Int32.Parse(commandParameters[1]),
+					Int32.Parse(commandParameters[2]));
+
+				shapeCommands.Add(shape);
+
+				currentX = Int32.Parse(commandParameters[1]);
+				currentY = Int32.Parse(commandParameters[2]);
 
 				return true;
 			}
@@ -359,8 +448,8 @@ namespace GraphicalProgrammingLanguage
 
 				return true;
 			}
-
 			return false;
 		}
+
 	}
 }

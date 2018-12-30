@@ -46,18 +46,88 @@ namespace GraphicalProgrammingLanguage
 				}
 				else
 				{
-					// Else if the user has entered a valid command
-					// Add the command to the textbox
-					this.SingleLineOutput.SelectionColor = Color.Green;
-					this.SingleLineOutput.AppendText(SingleLineInputTextbox.Text + "\n");
-					this.SingleLineOutput.ScrollToCaret();
-
-					// Set the TextBox value to be an empty string
-					singleLineInputTextBox.Text = "";
-
-					if(command.ExecuteCommand(shapes, commandString, commandParameters))
+					if (commandString.ToLower() == "run")
 					{
-						this.GraphicsPictureBox.Refresh();
+						RunFileCommand(commandParameters[0]);
+					}
+					else
+					{
+						// Else if the user has entered a valid command
+						// Add the command to the textbox
+						this.SingleLineOutput.SelectionColor = Color.Green;
+						this.SingleLineOutput.AppendText(SingleLineInputTextbox.Text + "\n");
+						this.SingleLineOutput.ScrollToCaret();
+
+						// Set the TextBox value to be an empty string
+						singleLineInputTextBox.Text = "";
+
+						if (command.ExecuteCommand(shapes, commandString, commandParameters))
+						{
+							this.GraphicsPictureBox.Refresh();
+						}
+					}
+				}
+			}
+		}
+
+		public void RunFileCommand(string filePath)
+		{
+			// Output to the user that file is attempting to be loaded.
+			this.SingleLineOutput.SelectionColor = Color.Green;
+			this.SingleLineOutput.AppendText("Attempting to load file (" + filePath + ") \n");
+			this.SingleLineOutput.ScrollToCaret();
+
+			SingleLineInputTextbox.Text = "";
+
+			string errorMessage;
+			if (!command.ValidateFile(filePath, out errorMessage))
+			{
+				this.SingleLineOutput.SelectionColor = Color.Red;
+				this.SingleLineOutput.AppendText(errorMessage);
+				this.SingleLineOutput.ScrollToCaret();
+			}
+			else
+			{
+				// Attempt to load the file
+				System.IO.StreamReader file = new System.IO.StreamReader(filePath);
+
+				string line;
+				int lineNumber = 0;
+				while ((line = file.ReadLine()) != null)
+				{
+					// Iterate the file line by line
+					// Increment the line number
+					lineNumber++;
+
+					string[] splitUserInput = line.Split(' ');
+
+					// Split the line of the file into command and parameters
+					string commandString = splitUserInput[0];
+					string[] commandParameters = command.SplitParameters(splitUserInput);
+
+					// Pass each line to the validator along with the line number
+					bool validCommand = command.ValidateCommand(lineNumber, commandString, commandParameters, out errorMessage);
+
+					if (!validCommand)
+					{
+						// If the user has not entered a valid command
+						this.SingleLineOutput.SelectionColor = Color.Red;
+						this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + errorMessage + "\n");
+						this.SingleLineOutput.ScrollToCaret();
+					}
+					else
+					{
+						// Else if the user has entered a valid command
+						// Add the command to the textbox
+						this.SingleLineOutput.SelectionColor = Color.Green;
+						this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + line + "\n");
+						this.SingleLineOutput.ScrollToCaret();
+
+
+						if (command.ExecuteCommand(shapes, commandString, commandParameters))
+						{
+							this.GraphicsPictureBox.Refresh();
+						}
 					}
 				}
 			}
