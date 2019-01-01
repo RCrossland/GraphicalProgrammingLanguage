@@ -34,7 +34,7 @@ namespace GraphicalProgrammingLanguage
 					string[] splitUserInput = command.SplitUserInput(singleLineInputTextBox.Text.Trim());
 
 					string commandString = splitUserInput[0];
-					string[] commandParameters = command.SplitParameters(splitUserInput);
+					string commandParameters = string.Join(" ", splitUserInput.Skip(1).ToArray());
 
 					// Validate the command and hold the error message returned in a variable
 					string errorMessage;
@@ -51,7 +51,7 @@ namespace GraphicalProgrammingLanguage
 					{
 						if (commandString.ToLower() == "run")
 						{
-							RunFileCommand(commandParameters[0]);
+							RunFileCommand(commandParameters);
 						}
 						else
 						{
@@ -107,7 +107,7 @@ namespace GraphicalProgrammingLanguage
 
 					// Split the line of the file into command and parameters
 					string commandString = splitUserInput[0];
-					string[] commandParameters = command.SplitParameters(splitUserInput);
+					string commandParameters = string.Join(" ", splitUserInput.Skip(1).ToArray());
 
 					// Pass each line to the validator along with the line number
 					bool validCommand = command.ValidateCommand(lineNumber, commandString, commandParameters, out errorMessage);
