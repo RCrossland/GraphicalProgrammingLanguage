@@ -61,17 +61,8 @@ namespace GraphicalProgrammingLanguage
 						errorMessage = "You haven't defined a value to store with the variable.";
 						return false;
 					}
-					else if (variables.ContainsKey(variableName))
-					{
-						variables[variableName] = variableSplit[1].Trim();
-
-						errorMessage = "";
-						return true;
-					}
 					else
 					{
-						variables.Add(variableName, variableSplit[1].Trim());
-
 						errorMessage = "";
 						return true;
 					}
@@ -91,17 +82,8 @@ namespace GraphicalProgrammingLanguage
 						errorMessage = "You must define a value for the variable.";
 						return false;
 					}
-					else if(variables.ContainsKey(commandString))
-					{
-						variables[commandString] = splitVariable[1].Trim();
-
-						errorMessage = "";
-						return true;
-					}
 					else
 					{
-						variables.Add(commandString, splitVariable[1].Trim());
-
 						errorMessage = "";
 						return true;
 					}
@@ -203,7 +185,7 @@ namespace GraphicalProgrammingLanguage
 			}
 			else if(commandString.ToLower() == "loop")
 			{
-				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
+				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
 				// loop 3; rectangle, red, 10 20; moveto 10, 10;
 
 				if (commandParametersSplit.Length < 2){
@@ -211,6 +193,33 @@ namespace GraphicalProgrammingLanguage
 					return false;
 				}
 
+				if (!ValidateInteger(commandParametersSplit[0], out errorMessage))
+				{
+					return false;
+				}
+
+				// Loop over the remaining commands and validate each command
+				string[] loopActions = commandParametersSplit.Skip(1).ToArray();
+				for (int i = 0; i < loopActions.Length; i++)
+				{
+					string[] loopActionsSplit = SplitUserInput(loopActions[i]);
+
+					string loopActionsCommand = loopActionsSplit[0];
+					string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+
+					if(loopActionsCommand.ToLower() == "penup")
+					{
+						penUp = true;
+					} else if(loopActionsCommand.ToLower() == "pendown")
+					{
+						penUp = false;
+					}
+
+					if(!ValidateCommand(0, loopActionsCommand, loopActionsParameter, out errorMessage))
+					{
+						return false;
+					}
+				}
 
 				errorMessage = "";
 				return true;
@@ -448,16 +457,16 @@ namespace GraphicalProgrammingLanguage
 			}
 			else
 			{
-				if (variables.ContainsKey(numberParamter))
+				if (variables.ContainsKey(numberParamter.Trim().ToUpper()))
 				{
-					ValidateInteger(variables[numberParamter], out errorMessage);
+					ValidateInteger(variables[numberParamter.Trim().ToUpper()], out errorMessage);
 
 					errorMessage = "";
 					return true;
 				}
 				else
 				{
-				errorMessage = "'" + numberParamter + "' must be an integer.";
+				errorMessage = "'" + numberParamter + "' must be a positive integer.";
 				return false;
 				}
 			}
@@ -479,9 +488,9 @@ namespace GraphicalProgrammingLanguage
 
 		public bool ValidatePoint(string pointParameter, out string errorMessage)
 		{
-			if (variables.ContainsKey(pointParameter))
+			if (variables.ContainsKey(pointParameter.Trim().ToUpper()))
 			{
-				ValidateInteger(variables[pointParameter], out errorMessage);
+				ValidateInteger(variables[pointParameter.Trim().ToUpper()], out errorMessage);
 
 				errorMessage = "";
 				return true;
@@ -564,11 +573,11 @@ namespace GraphicalProgrammingLanguage
 						int point = 0;
 						int calculatedPoint;
 
-						if (variables.ContainsKey(inputPoint))
+						if (variables.ContainsKey(inputPoint.Trim().ToUpper()))
 						{
-							if(Regex.IsMatch(variables[inputPoint], "^[0-9]+$"))
+							if(Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								point = Int32.Parse(variables[inputPoint]);
+								point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
 							}
 							else
 							{
@@ -601,11 +610,11 @@ namespace GraphicalProgrammingLanguage
 						int pointY = 0;
 						int calculatedPointX, calculatedPointY;
 
-						if (variables.ContainsKey(inputPointX))
+						if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
 						{
-							if(Regex.IsMatch(variables[inputPointX], "^[0-9]+$"))
+							if(Regex.IsMatch(variables[inputPointX.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								pointX = Int32.Parse(variables[inputPointX]);
+								pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
 							} 
 							else
 							{
@@ -617,11 +626,11 @@ namespace GraphicalProgrammingLanguage
 							pointX = Int32.Parse(inputPointX);
 						}
 
-						if (variables.ContainsKey(inputPointY))
+						if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 						{
-							if (Regex.IsMatch(variables[inputPointY], "^[0-9]+$"))
+							if (Regex.IsMatch(variables[inputPointY.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								pointY = Int32.Parse(variables[inputPointY]);
+								pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
 							}
 							else
 							{
@@ -656,27 +665,27 @@ namespace GraphicalProgrammingLanguage
 						string points1, points2, points3;
 						int calculatedPoint1X, calculatedPoint1Y, calculatedPoint2X, calculatedPoint2Y, calculatedPoint3X, calculatedPoint3Y;
 
-						if (variables.ContainsKey(inputPoint1))
+						if (variables.ContainsKey(inputPoint1.Trim().ToUpper()))
 						{
-							points1 = variables[inputPoint1];
+							points1 = variables[inputPoint1.Trim().ToUpper()];
 						}
 						else
 						{
 							points1 = inputPoint1;
 						}
 
-						if (variables.ContainsKey(inputPoint2))
+						if (variables.ContainsKey(inputPoint2.Trim().ToUpper()))
 						{
-							points2 = variables[inputPoint2];
+							points2 = variables[inputPoint2.Trim().ToUpper()];
 						}
 						else
 						{
 							points2 = inputPoint2;
 						}
 
-						if (variables.ContainsKey(inputPoint3))
+						if (variables.ContainsKey(inputPoint3.Trim().ToUpper()))
 						{
-							points3 = variables[inputPoint3];
+							points3 = variables[inputPoint3.Trim().ToUpper()];
 						}
 						else
 						{
@@ -720,9 +729,9 @@ namespace GraphicalProgrammingLanguage
 						{
 							string points;
 
-							if (variables.ContainsKey(parameterPoints[d]))
+							if (variables.ContainsKey(parameterPoints[d].Trim().ToUpper()))
 							{
-								points = variables[parameterPoints[d]];
+								points = variables[parameterPoints[d].Trim().ToUpper()];
 							}
 							else
 							{
@@ -752,6 +761,26 @@ namespace GraphicalProgrammingLanguage
 
 				return true;
 			}
+			else if(commandString == "LOOP")
+			{
+				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
+
+				string[] loopActions = commandParametersSplit.Skip(1).ToArray();
+				for (int x = 0; x < Int32.Parse(commandParametersSplit[0]); x++)
+				{
+					for (int i = 0; i < loopActions.Length; i++)
+					{
+						string[] loopActionsSplit = SplitUserInput(loopActions[i]);
+
+						string loopActionsCommand = loopActionsSplit[0];
+						string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+
+						ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
+					}
+				}
+
+				return true;
+			}
 			else if(commandString == "RECTANGLE")
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
@@ -763,23 +792,30 @@ namespace GraphicalProgrammingLanguage
 				int pointX = 0;
 				int pointY = 0;
 
-				if (Regex.IsMatch(inputPointX, "^[0-9]+$") && Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				if(Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
 					pointX = Int32.Parse(inputPointX);
+				} 
+				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
+				{
+					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
+				}
+
+				if(Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				{
 					pointY = Int32.Parse(inputPointY);
 				}
-				else if (variables.ContainsKey(inputPointX) && variables.ContainsKey(inputPointY))
+				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					if (Regex.IsMatch(variables[inputPointX], "^[0-9]+$") && 
-						Regex.IsMatch(variables[inputPointY], "^[0-9]+$"))
-					{
-						pointX = Int32.Parse(variables[inputPointX]);
-						pointY = Int32.Parse(variables[inputPointY]);
-					}
-					else
-					{
-						return false;
-					}
+					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
 				}
 
 				// Get the shape and set the values
@@ -803,11 +839,11 @@ namespace GraphicalProgrammingLanguage
 				{
 					point = Int32.Parse(inputPoint);
 				}
-				else if (variables.ContainsKey(inputPoint))
+				else if (variables.ContainsKey(inputPoint.Trim().ToUpper()))
 				{
-					if (Regex.IsMatch(variables[inputPoint], "^[0-9]+$"))
+					if (Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 					{
-						point = Int32.Parse(variables[inputPoint]);
+						point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
 					}
 					else
 					{
@@ -836,11 +872,11 @@ namespace GraphicalProgrammingLanguage
 				{
 					point = Int32.Parse(inputPoint);
 				}
-				else if (variables.ContainsKey(inputPoint))
+				else if (variables.ContainsKey(inputPoint.Trim().ToUpper()))
 				{
-					if (Regex.IsMatch(variables[inputPoint], "^[0-9]+$"))
+					if (Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 					{
-						point = Int32.Parse(variables[inputPoint]);
+						point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
 					}
 					else
 					{
@@ -866,23 +902,30 @@ namespace GraphicalProgrammingLanguage
 				int pointX = 0;
 				int pointY = 0;
 
-				if (Regex.IsMatch(inputPointX, "^[0-9]+$") && Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				if(Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
 					pointX = Int32.Parse(inputPointX);
+				}
+				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
+				{
+					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
+				}
+
+				if(Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				{
 					pointY = Int32.Parse(inputPointY);
 				}
-				else if (variables.ContainsKey(inputPointX) && variables.ContainsKey(inputPointY))
+				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					if (Regex.IsMatch(variables[inputPointX], "^[0-9]+$") &&
-						Regex.IsMatch(variables[inputPointY], "^[0-9]+$"))
-					{
-						pointX = Int32.Parse(variables[inputPointX]);
-						pointY = Int32.Parse(variables[inputPointY]);
-					}
-					else
-					{
-						return false;
-					}
+					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
 				}
 
 				currentX = pointX;
@@ -900,23 +943,30 @@ namespace GraphicalProgrammingLanguage
 				int pointX = 0;
 				int pointY = 0;
 
-				if (Regex.IsMatch(inputPointX, "^[0-9]+$") && Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				if (Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
 					pointX = Int32.Parse(inputPointX);
+				}
+				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
+				{
+					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
+				}
+
+				if (Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				{
 					pointY = Int32.Parse(inputPointY);
 				}
-				else if (variables.ContainsKey(inputPointX) && variables.ContainsKey(inputPointY))
+				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					if (Regex.IsMatch(variables[inputPointX], "^[0-9]+$") &&
-						Regex.IsMatch(variables[inputPointY], "^[0-9]+$"))
-					{
-						pointX = Int32.Parse(variables[inputPointX]);
-						pointY = Int32.Parse(variables[inputPointY]);
-					}
-					else
-					{
-						return false;
-					}
+					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
 				}
 
 				// Get the shape and set the values
@@ -941,9 +991,9 @@ namespace GraphicalProgrammingLanguage
 
 				int point1X, point1Y, point2X, point2Y, point3X, point3Y = 0;
 
-				if (variables.ContainsKey(inputPoint1))
+				if (variables.ContainsKey(inputPoint1.Trim().ToUpper()))
 				{
-					string[] points1 = variables[inputPoint1].Split(' ');
+					string[] points1 = variables[inputPoint1.Trim().ToUpper()].Split(' ');
 
 					if(!Regex.IsMatch(points1[0], "^[0-9]+$") || !Regex.IsMatch(points1[1], "^[0-9]+$")){
 						return false;
@@ -962,9 +1012,9 @@ namespace GraphicalProgrammingLanguage
 				}
 
 
-				if (variables.ContainsKey(inputPoint2))
+				if (variables.ContainsKey(inputPoint2.Trim().ToUpper()))
 				{
-					string[] points2 = variables[inputPoint2].Split(' ');
+					string[] points2 = variables[inputPoint2.Trim().ToUpper()].Split(' ');
 
 					if (!Regex.IsMatch(points2[0], "^[0-9]+$") || !Regex.IsMatch(points2[1], "^[0-9]+$"))
 					{
@@ -984,9 +1034,9 @@ namespace GraphicalProgrammingLanguage
 					point2Y = Int32.Parse(points2[1]);
 				}
 
-				if (variables.ContainsKey(inputPoint3))
+				if (variables.ContainsKey(inputPoint3.Trim().ToUpper()))
 				{
-					string[] points3 = variables[inputPoint3].Split(' ');
+					string[] points3 = variables[inputPoint3.Trim().ToUpper()].Split(' ');
 
 					if (!Regex.IsMatch(points3[0], "^[0-9]+$") || !Regex.IsMatch(points3[1], "^[0-9]+$"))
 					{
@@ -1033,9 +1083,9 @@ namespace GraphicalProgrammingLanguage
 					int pointX = 0;
 					int pointY = 0;
 
-					if (variables.ContainsKey(pointsList[i]))
+					if (variables.ContainsKey(pointsList[i].Trim().ToUpper()))
 					{
-						string[] pointsSplit = variables[pointsList[i]].Split(' ').ToArray();
+						string[] pointsSplit = variables[pointsList[i].Trim().ToUpper()].Split(' ').ToArray();
 
 						if(Regex.IsMatch(pointsSplit[0], "^[0-9]+$") && Regex.IsMatch(pointsSplit[1], "^[0-9]+$"))
 						{
@@ -1066,7 +1116,84 @@ namespace GraphicalProgrammingLanguage
 
 				return true;
 			}
-			return false;
+			else
+			{
+				// Ensure the command isn't a variable reference
+				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
+				if (commandString.Contains("="))
+				{
+					string[] variableSplit = commandString.Trim().Split('=').ToArray();
+					string variableName = variableSplit[0];
+
+					if (variables.ContainsKey(variableName.Trim().ToUpper()))
+					{
+						variables[variableName.Trim().ToUpper()] = variableSplit[1].Trim();
+						return true;
+					}
+					else
+					{
+						variables.Add(variableName.Trim().ToUpper(), variableSplit[1].Trim());
+						return true;
+					}
+				}
+				else if (commandParametersSplit[0].Contains("="))
+				{
+					string[] splitVariable = commandParametersSplit[0].Split('=');
+					int variableValue = 0;
+
+					if(splitVariable[1].Contains("+"))
+					{
+						string[] splitVariableOnOperator = splitVariable[1].Split('+');
+
+						for(int d = 0; d < splitVariableOnOperator.Length; d++)
+						{
+							if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+							{
+								variableValue = variableValue + Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
+							}
+							else
+							{
+								variableValue = variableValue + Int32.Parse(splitVariableOnOperator[d]);
+							}
+						}
+					}
+					else if(splitVariable[1].Contains("-"))
+					{
+						string[] splitVariableOnOperator = splitVariable[1].Split('-');
+
+						for (int d = 0; d < splitVariableOnOperator.Length; d++)
+						{
+							if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+							{
+								variableValue = variableValue - Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
+							}
+							else
+							{
+								variableValue = variableValue - Int32.Parse(splitVariableOnOperator[d]);
+							}
+						}
+					}
+					else
+					{
+						variableValue = Int32.Parse(splitVariable[1]);
+					}
+
+					if (variables.ContainsKey(commandString.Trim().ToUpper()))
+					{
+						variables[commandString.Trim().ToUpper()] = variableValue.ToString();
+						return true;
+					}
+					else
+					{
+						variables.Add(commandString.Trim().ToUpper(), variableValue.ToString());
+						return true;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
 		}
 
 	}
