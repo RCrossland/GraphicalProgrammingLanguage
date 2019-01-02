@@ -448,25 +448,25 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
-		public bool ValidateInteger(string numberParamter, out string errorMessage)
+		public bool ValidateInteger(string numberParameter, out string errorMessage)
 		{
-			if(Regex.IsMatch(numberParamter, "^[0-9]+$"))
+			if(Regex.IsMatch(numberParameter, "^[0-9]+$"))
 			{
-				errorMessage = "'";
+				errorMessage = "";
 				return true;
 			}
 			else
 			{
-				if (variables.ContainsKey(numberParamter.Trim().ToUpper()))
+				if (variables.ContainsKey(numberParameter.Trim().ToUpper()))
 				{
-					ValidateInteger(variables[numberParamter.Trim().ToUpper()], out errorMessage);
+					ValidateInteger(variables[numberParameter.Trim().ToUpper()], out errorMessage);
 
 					errorMessage = "";
 					return true;
 				}
 				else
 				{
-				errorMessage = "'" + numberParamter + "' must be a positive integer.";
+				errorMessage = "'" + numberParameter + "' must be a positive integer.";
 				return false;
 				}
 			}
@@ -503,21 +503,31 @@ namespace GraphicalProgrammingLanguage
 				errorMessage = "Points " + pointParameter + " must have two points separated by a space.";
 				return false;
 			}
-			else if (!Regex.IsMatch(points[0].Trim(), "^[0-9]+$"))
+
+			for(int i = 0; i < points.Length; i++)
 			{
-				errorMessage = "Points '" + points[0] + "' must be an integer at '" + pointParameter + "'.";
-				return false;
-			}
-			else if (!Regex.IsMatch(points[1].Trim(), "^[0-9]+$"))
-			{
-				errorMessage = "Points '" + points[1] + "' must be an integer at '" + pointParameter + "'.";
-				return false;
-			}
-			else
-			{
+				if (variables.ContainsKey(points[i].Trim().ToUpper()))
+				{
+					if (!Regex.IsMatch(variables[points[i].Trim().ToUpper()], "^[0-9]+$"))
+					{
+						errorMessage = "Points '" + variables[points[i].Trim().ToUpper()] + "' must be an integer at '" + pointParameter + "'.";
+						return false;
+					}
+				}
+				else if (!Regex.IsMatch(points[i].Trim(), "^[0-9]+$"))
+				{
+					errorMessage = "Points '" + points[i] + "' must be an integer at '" + pointParameter + "'.";
+					return false;
+				}
+				else
+				{
 					errorMessage = "";
 					return true;
+				}
 			}
+
+			errorMessage = "";
+			return true;
 		}
 
 		public bool ValidateFile(string filePath, out string errorMessage)
