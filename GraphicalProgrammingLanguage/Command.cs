@@ -186,7 +186,6 @@ namespace GraphicalProgrammingLanguage
 			else if(commandString.ToLower() == "loop")
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
-				// loop 3; rectangle, red, 10 20; moveto 10, 10;
 
 				if (commandParametersSplit.Length < 2){
 					errorMessage = "Incorrect loop format. E.g. 'Loop <number of loops>; <command>; <command>;...'";
@@ -466,8 +465,8 @@ namespace GraphicalProgrammingLanguage
 				}
 				else
 				{
-				errorMessage = "'" + numberParameter + "' must be a positive integer.";
-				return false;
+					errorMessage = "'" + numberParameter + "' must be a positive integer.";
+					return false;
 				}
 			}
 		}
