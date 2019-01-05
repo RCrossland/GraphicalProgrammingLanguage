@@ -548,7 +548,7 @@ namespace GraphicalProgrammingLanguage
 				}
 				else
 				{
-					for(int i = 1; i < (commandParametersSplit.Length - 1); i++)
+					for(int i = 1; i < commandParametersSplit.Length; i++)
 					{
 						if (!ValidatePoint(commandParametersSplit[i], out errorMessage))
 						{
@@ -564,7 +564,7 @@ namespace GraphicalProgrammingLanguage
 			{
 				if(commandParameters.Length > 0)
 				{
-					errorMessage = "Clear doesn't have any extra parameters";
+					errorMessage = "Clear doesn't have any extra parameters.";
 					return false;
 				}
 				else
