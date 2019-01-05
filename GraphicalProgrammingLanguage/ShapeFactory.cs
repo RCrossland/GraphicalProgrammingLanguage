@@ -8,6 +8,11 @@ namespace GraphicalProgrammingLanguage
 {
 	class ShapeFactory
 	{
+		/// <summary>
+		/// Shape factory to return the requested shape.
+		/// </summary>
+		/// <param name="shapeType">String: The shape to be returned to the user.</param>
+		/// <returns>Shape: A refernece to the requested shape.</returns>
 		public Shape GetShape(string shapeType)
 		{
 			shapeType = shapeType.ToUpper().Trim();

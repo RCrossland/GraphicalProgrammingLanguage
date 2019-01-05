@@ -19,6 +19,7 @@ namespace GraphicalProgrammingLanguage
 			currentY = 0;
 		}
 
+		// An array of accepted commands.
 		private string[] commands = { "if", "clear", "loop", "run", "penup", "pendown", "drawto", "moveto", "repeat",
 			"circle", "rectangle", "square", "triangle", "polygon" };
 
@@ -30,12 +31,23 @@ namespace GraphicalProgrammingLanguage
 
 		Dictionary<string, string> variables = new Dictionary<string, string>();
 
+		/// <summary>
+		/// Splits the user input based on spaces
+		/// </summary>
+		/// <param name="userInput">String value to split.</param>
+		/// <returns>An array of strings which have been separated by spaces.</returns>
 		public string[] SplitUserInput(string userInput)
 		{
 			// Split the command based on a space to get the command and the parameters
 			return userInput.Trim().Split(' ');
 		}
 
+		/// <summary>
+		/// Split the user input based on a specified character and remove and white spaces surrounding the string.
+		/// </summary>
+		/// <param name="userInput">String: Value that is to be split.</param>
+		/// <param name="splitBy">Character: Value to split by.</param>
+		/// <returns>An array of strings which have been separated by the specified character</returns>
 		public string[] SplitParameters(string userInput, string splitBy)
 		{
 			// Split the parameters based on a comma
@@ -43,6 +55,14 @@ namespace GraphicalProgrammingLanguage
 			return parameterSplit;
 		}
 
+		/// <summary>
+		/// Validate the command checking the parameters passed
+		/// </summary>
+		/// <param name="lineNumber">Integer: Line number of the command.</param>
+		/// <param name="commandString">String: The command to validate.</param>
+		/// <param name="commandParameters">String: The parameters separated by a comma.</param>
+		/// <param name="errorMessage">String: The error messaged returned, if no error was found this will be empty.</param>
+		/// <returns>Bool: Whether the command was successfully validated.</returns>
 		public bool ValidateCommand(int lineNumber, string commandString, string commandParameters, out string errorMessage)
 		{
 			// Check whether the command is valid
@@ -580,6 +600,12 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
+		/// <summary>
+		/// Checks whether the given value is an integer.
+		/// </summary>
+		/// <param name="numberParameter">String: The value to check for an integer.</param>
+		/// <param name="errorMessage">String: The error message to be returned from the function.</param>
+		/// <returns>Bool: Whether the supplied string was an integer value.</returns>
 		public bool ValidateInteger(string numberParameter, out string errorMessage)
 		{
 			if(Regex.IsMatch(numberParameter, "^[0-9]+$"))
@@ -604,6 +630,12 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
+		/// <summary>
+		/// Checks whether the given value is a colour.
+		/// </summary>
+		/// <param name="colourParameter">String: The value to check for a colour.</param>
+		/// <param name="errorMessage">String: The error message to be returend from the function.</param>
+		/// <returns>Bool: Whether the supplied string was a colour.</returns>
 		public bool ValidateColour(string colourParameter, out string errorMessage)
 		{
 			if (Color.FromName(colourParameter).IsKnownColor)
@@ -618,6 +650,12 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
+		/// <summary>
+		/// Checks whether the given value is a point.
+		/// </summary>
+		/// <param name="pointParameter">String: The value to check for a point.</param>
+		/// <param name="errorMessage">String: The error message to be returned from the function.</param>
+		/// <returns>Bool: Whether the supplied string was a point.</returns>
 		public bool ValidatePoint(string pointParameter, out string errorMessage)
 		{
 			if (variables.ContainsKey(pointParameter.Trim().ToUpper()))
@@ -662,6 +700,12 @@ namespace GraphicalProgrammingLanguage
 			return true;
 		}
 
+		/// <summary>
+		/// Checks whether the given file is a file.
+		/// </summary>
+		/// <param name="filePath">String: The value to check for a file.</param>
+		/// <param name="errorMessage">String: The error message to be returned from the function.</param>
+		/// <returns>Bool: Whether the supplied string was a point.</returns>
 		public bool ValidateFile(string filePath, out string errorMessage)
 		{
 			if (Path.GetExtension(filePath) != ".txt")
@@ -681,11 +725,13 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
-		public void MultiLineLoop()
-		{
-
-		}
-
+		/// <summary>
+		/// Uses the ShapeFactory to get the releveant shape and adds to them to a shape list.
+		/// </summary>
+		/// <param name="shapeCommands">List: A list of Shapes.</param>
+		/// <param name="commandString">String: The command to add to the list.</param>
+		/// <param name="commandParameters">String: The parameters for the commands.</param>
+		/// <returns>Bool: If the command was sucessfully found and added to the list return true.</returns>
 		public bool ExecuteCommand(ArrayList shapeCommands, string commandString, string commandParameters)
 		{
 			ShapeFactory shapeFactory = new ShapeFactory();

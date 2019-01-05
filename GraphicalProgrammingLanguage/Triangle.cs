@@ -15,6 +15,11 @@ namespace GraphicalProgrammingLanguage
 		{
 		}
 
+		/// <summary>
+		/// Sets the colour and points values of the triangle.
+		/// </summary>
+		/// <param name="colour">Color: The colour of the triangle.</param>
+		/// <param name="list">A list of parameter values to be set as the triangle points.</param>
 		public override void Set(Color colour, params int[] list)
 		{
 			base.Set(colour, list[0], list[1]);
@@ -26,6 +31,10 @@ namespace GraphicalProgrammingLanguage
 			this.point3b = list[7];
 		}
 
+		/// <summary>
+		/// Draws a triangle between three points.
+		/// </summary>
+		/// <param name="g">The graphics panel of where to draw the triangle.</param>
 		public override void Draw(Graphics g)
 		{
 			Point[] points = { new Point(point1a, point1b), new Point(point2a, point2b), new Point(point3a, point3b) };

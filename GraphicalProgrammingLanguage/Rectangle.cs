@@ -23,6 +23,11 @@ namespace GraphicalProgrammingLanguage
 			this.height = height;
 		}
 
+		/// <summary>
+		/// Sets the colour, currentX, currentY, width and height values of the Rectangle shape.
+		/// </summary>
+		/// <param name="colour">Color: The colour to draw the rectangle.</param>
+		/// <param name="list">A list of integers for the currentX, currentY, width and height values for the rectangle.</param>
 		public override void Set(Color colour, params int[] list)
 		{
 			base.Set(colour, list[0], list[1]);
@@ -30,6 +35,10 @@ namespace GraphicalProgrammingLanguage
 			this.height = list[3];
 		}
 
+		/// <summary>
+		/// Draws a rectangle based on the width and height.
+		/// </summary>
+		/// <param name="g">The graphics panel of where to draw the rectangle.</param>
 		public override void Draw(Graphics g)
 		{
 			Pen p = new Pen(colour, 2);

@@ -16,12 +16,21 @@ namespace GraphicalProgrammingLanguage
 
 		}
 
+		/// <summary>
+		/// Sets the colour and diameter values of the circle
+		/// </summary>
+		/// <param name="colour">Color: The colour of the circle.</param>
+		/// <param name="list">A list of integer values for the currentx and currenty of the shape as well the diameter.</param>
 		public override void Set(Color colour, params int[] list)
 		{
 			base.Set(colour, list[0], list[1]);
 			radius = list[2];
 		}
 
+		/// <summary>
+		/// Draws a circle based on the diameter.
+		/// </summary>
+		/// <param name="g">The graphics panel of where to draw the circle.</param>
 		public override void Draw(Graphics g)
 		{
 			Pen pen = new Pen(colour, 2);

@@ -13,6 +13,9 @@ namespace GraphicalProgrammingLanguageTests
 	[TestClass]
 	public class CommandTest
 	{
+		/// <summary>
+		/// Tests whether the userCommand is split into two based on spaces.
+		/// </summary>
 		[TestMethod]
 		public void Test_SplitUserInput()
 		{
@@ -27,6 +30,9 @@ namespace GraphicalProgrammingLanguageTests
 			CollectionAssert.AreEqual(actual, expected, "Failed to split the command.");
 		}
 
+		/// <summary>
+		/// Tests whether the userInput is split based on a specified delimiter
+		/// </summary>
 		[TestMethod]
 		public void Test_SplitParameters()
 		{
@@ -43,6 +49,9 @@ namespace GraphicalProgrammingLanguageTests
 		}
 
 		// Validation Functions 
+		/// <summary>
+		/// Tests whether an invalid command call is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_Command_Call()
 		{
@@ -60,23 +69,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect command wasn't spotted.");
 		}
 
-		[TestMethod]
-		public void Test_Invalid_Number_Of_Parameters()
-		{
-			// Pass an invalid number of parameters for the Square method and ensure the correct error message is returned
-			Command command = new Command();
-
-			string commandString = "Square";
-			string parameterString = "5, 10, 25";
-
-			string errorMessage;
-			bool actual = command.ValidateCommand(1, commandString, parameterString, out errorMessage);
-			bool expected = false;
-
-			Assert.AreEqual("Square expects 2 parameters to be passed.", errorMessage, "The wrong error message was returned.");
-			Assert.AreEqual(expected, actual, "Incorrect number of parameters passed.");
-		}
-
+		/// <summary>
+		/// Tests whether an invalid integer is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_Parmeter_Validate_Integer()
 		{
@@ -93,6 +88,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid integer is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Valid_Parmeter_Validate_Integer()
 		{
@@ -109,6 +107,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid value is passed to a variable.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_Variable_Parmeter_Validate_Integer()
 		{
@@ -126,7 +127,10 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual("", errorMessage, "The wrong error message was returned.");
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
-
+		
+		/// <summary>
+		/// Tests whether an integer stored in a variable is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Valid_Variable_Parmeter_Validate_Integer()
 		{
@@ -145,6 +149,7 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		// Test whether an invalid colour is spotted.
 		[TestMethod]
 		public void Test_Invalid_Colour_Validate_Colour()
 		{
@@ -161,6 +166,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid colour is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Valid_Colour_Validate_Colour()
 		{
@@ -178,6 +186,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string point is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_String_Point_Validate_Point()
 		{
@@ -194,6 +205,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether a string variable is spotted as an invalid point.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_Variable_Point_Validate_Point()
 		{
@@ -212,6 +226,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid variable is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Valid_Variable_Point_Validate_Point()
 		{
@@ -230,6 +247,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid point structure is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Invalid_Structure_Point_Validate_Point()
 		{
@@ -246,6 +266,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether an valid integer point is spotted
+		/// </summary>
 		[TestMethod]
 		public void Test_Valid_Integer_Point_Validate_Point()
 		{
@@ -262,8 +285,11 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "Incorrect parameter type not spotted.");
 		}
 
+		/// <summary>
+		/// Tests whether valid repeat command works with + conditional.
+		/// </summary>
 		[TestMethod]
-		public void Test_Command_Repeat_Valid__Greater_Than_Parameters()
+		public void Test_Command_Repeat_Valid_Greater_Than_Parameters()
 		{
 			// Test Repeat with valid parameters
 			Command command = new Command();
@@ -281,6 +307,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether valid repeat command works with - conditional.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Valid_Less_Than_Parameters()
 		{
@@ -300,6 +329,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether invalid length of parameters for repeat command is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Invalid_Length_Parameters()
 		{
@@ -319,6 +351,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid command is spotted in a repeat command.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Invalid_Command_Parameters()
 		{
@@ -338,6 +373,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid operator is spotted on a repeat command.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Invalid_Operator_Parameters()
 		{
@@ -357,6 +395,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid integer incrementer is spotted on a repeat command.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Invalid_Integer_Iterator_Parameters()
 		{
@@ -376,6 +417,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid integer parameter is spotted on a repeat command.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Repeat_Invalid_Integer_Parameters()
 		{
@@ -395,6 +439,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid single line loop works.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Single_Loop_Valid_Parameters ()
 		{
@@ -414,6 +461,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string incrementer is spotted on a single line loop.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Single_Loop_Invalid_Incrementer_Parameters()
 		{
@@ -433,6 +483,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid command is spotted on a single line loop.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Single_Loop_Invalid_Command_Parameter()
 		{
@@ -452,6 +505,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid multi line loop passes.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Multi_Line_Loop_Valid_Parameter()
 		{
@@ -481,6 +537,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests an invalid string incrementer is spotted on a multi line loop.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Multi_Line_Loop_Invalid_Incrementer_Parameter()
 		{
@@ -500,6 +559,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid command is spotted on a multi line loop.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Multi_Line_Loop_Invalid_Command_Parameter()
 		{
@@ -525,6 +587,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an empty loop is spotted on a multi line loop
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Multi_Line_Loop_Empty_Parameter()
 		{
@@ -549,6 +614,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// TEsts whether a valid run command is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Run_Valid_Parameter()
 		{
@@ -569,6 +637,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid file is spotted on the run command.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Run_Invalid_File_Parameter()
 		{
@@ -587,8 +658,11 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a invalid file type is spotted on the run command.
+		/// </summary>
 		[TestMethod]
-		public void Test_Command_Run_Invalid_File_Path_Parameter()
+		public void Test_Command_Run_Invalid_File_Type_Parameter()
 		{
 			Command command = new Command();
 
@@ -605,6 +679,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether the valid MoveTo command is accepted with the PenUp.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Move_To_Pen_Up_Valid_Parameter()
 		{
@@ -624,6 +701,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether the valid MoveTo command is accepted with the PenDown.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Move_To_Pen_Down_Valid_Parameter()
 		{
@@ -642,6 +722,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string parameter is spotted on the MoveTo command
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Move_To_Pen_Up_Invalid_Parameter()
 		{
@@ -661,6 +744,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether the valid MoveTo command is accpeted with the PenUp
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Move_To_Pen_Down_In_Valid_Parameter()
 		{
@@ -679,6 +765,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether the valid circle command is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Circle_Valid_Parameters()
 		{
@@ -697,6 +786,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string parameter is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Circle_Invalid_Integer_Parameters()
 		{
@@ -715,6 +807,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid number of parameters is spotted for a circle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Circle_Invalid_Length_Parameters()
 		{
@@ -734,6 +829,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid rectangle command is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Rectangle_Valid_Parameters()
 		{
@@ -753,6 +851,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid number of parameters is spotted for a rectangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Rectangle_Invalid_Length_Parameters()
 		{
@@ -772,6 +873,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string is spotted when passed to a rectangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Rectangle_Invalid_Integer_Parameters()
 		{
@@ -791,6 +895,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid colour is spotted for a rectangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Rectangle_Invalid_Color_Parameters()
 		{
@@ -810,6 +917,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid square is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Square_Valid_Parameters()
 		{
@@ -829,6 +939,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string is spotted when passed to a square.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Square_Invalid_Integer_Parameters()
 		{
@@ -848,6 +961,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid colour is spotted when passed to a square.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Square_Invalid_Color_Parameters()
 		{
@@ -867,6 +983,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid length of parameters is passed to a square.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Square_Invalid_Length_Parameters()
 		{
@@ -886,6 +1005,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid triangle is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Triangle_Valid_Parameters()
 		{
@@ -905,6 +1027,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an in invalid number of parameters is spotted for a triangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Triangle_Invalid_Length_Parameters()
 		{
@@ -924,6 +1049,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid colour is passed for a triangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Triangle_Invalid_Color_Parameters()
 		{
@@ -944,6 +1072,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid string point is passe to a triangle.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Triangle_Invalid_Point_Parameters()
 		{
@@ -963,6 +1094,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid polygon is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Polygon_Valid_Parameters()
 		{
@@ -982,6 +1116,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid number of parameters is spotted to a polygon.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Polygon_Invalid_Length_Parameters()
 		{
@@ -1001,6 +1138,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid colour is spotted on a polygon.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Polygon_Invalid_Color_Parameters()
 		{
@@ -1020,6 +1160,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid point is spotted on a polygon.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Polygon_Invalid_Point_Parameters()
 		{
@@ -1039,6 +1182,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether a valid clear command is accepted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Clear_Valid_Parameters()
 		{
@@ -1058,6 +1204,9 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
 
+		/// <summary>
+		/// Tests whether an invalid clear command with parameters is spotted.
+		/// </summary>
 		[TestMethod]
 		public void Test_Command_Clear_Invalid_Length_Parameters()
 		{
