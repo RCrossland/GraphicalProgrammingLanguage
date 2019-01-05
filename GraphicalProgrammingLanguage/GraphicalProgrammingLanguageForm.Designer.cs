@@ -29,8 +29,8 @@
 		private void InitializeComponent()
 		{
 			this.TopMenuStrip = new System.Windows.Forms.MenuStrip();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.codeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.homeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CodeInputTabControl = new System.Windows.Forms.TabControl();
 			this.SingleLineInputTab = new System.Windows.Forms.TabPage();
 			this.SingleLineOutput = new System.Windows.Forms.RichTextBox();
@@ -38,24 +38,32 @@
 			this.MultiLineInputTab = new System.Windows.Forms.TabPage();
 			this.MultiLineInputSaveBtn = new System.Windows.Forms.Button();
 			this.MultiLineInputLoadBtn = new System.Windows.Forms.Button();
-			this.MultiLineInputRunBtn = new System.Windows.Forms.Button();
 			this.MultiLineInputTextBox = new System.Windows.Forms.RichTextBox();
 			this.MultiLineInputLoadFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.MultiLineInputSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.GraphicsPictureBox = new System.Windows.Forms.PictureBox();
+			this.DrawingPanel = new System.Windows.Forms.Panel();
+			this.HelpPanel = new System.Windows.Forms.Panel();
+			this.HelpGridView = new System.Windows.Forms.DataGridView();
+			this.CommandColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.ParametersColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.DescriptionColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.TopMenuStrip.SuspendLayout();
 			this.CodeInputTabControl.SuspendLayout();
 			this.SingleLineInputTab.SuspendLayout();
 			this.MultiLineInputTab.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.GraphicsPictureBox)).BeginInit();
+			this.DrawingPanel.SuspendLayout();
+			this.HelpPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.HelpGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// TopMenuStrip
 			// 
 			this.TopMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.TopMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.codeToolStripMenuItem});
+            this.homeToolStripMenuItem,
+            this.helpToolStripMenuItem});
 			this.TopMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.TopMenuStrip.Name = "TopMenuStrip";
 			this.TopMenuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -63,28 +71,30 @@
 			this.TopMenuStrip.TabIndex = 0;
 			this.TopMenuStrip.Text = "menuStrip1";
 			// 
-			// fileToolStripMenuItem
+			// homeToolStripMenuItem
 			// 
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
-			this.fileToolStripMenuItem.Text = "File";
+			this.homeToolStripMenuItem.Name = "homeToolStripMenuItem";
+			this.homeToolStripMenuItem.Size = new System.Drawing.Size(62, 24);
+			this.homeToolStripMenuItem.Text = "Home";
+			this.homeToolStripMenuItem.Click += new System.EventHandler(this.HomeToolStripMenuItem_Click);
 			// 
-			// codeToolStripMenuItem
+			// helpToolStripMenuItem
 			// 
-			this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
-			this.codeToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
-			this.codeToolStripMenuItem.Text = "Code";
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
+			this.helpToolStripMenuItem.Text = "Help";
+			this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
 			// 
 			// CodeInputTabControl
 			// 
 			this.CodeInputTabControl.Controls.Add(this.SingleLineInputTab);
 			this.CodeInputTabControl.Controls.Add(this.MultiLineInputTab);
 			this.CodeInputTabControl.Dock = System.Windows.Forms.DockStyle.Right;
-			this.CodeInputTabControl.Location = new System.Drawing.Point(710, 28);
+			this.CodeInputTabControl.Location = new System.Drawing.Point(710, 0);
 			this.CodeInputTabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.CodeInputTabControl.Name = "CodeInputTabControl";
 			this.CodeInputTabControl.SelectedIndex = 0;
-			this.CodeInputTabControl.Size = new System.Drawing.Size(679, 612);
+			this.CodeInputTabControl.Size = new System.Drawing.Size(679, 601);
 			this.CodeInputTabControl.TabIndex = 2;
 			// 
 			// SingleLineInputTab
@@ -95,7 +105,7 @@
 			this.SingleLineInputTab.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.SingleLineInputTab.Name = "SingleLineInputTab";
 			this.SingleLineInputTab.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.SingleLineInputTab.Size = new System.Drawing.Size(671, 583);
+			this.SingleLineInputTab.Size = new System.Drawing.Size(671, 572);
 			this.SingleLineInputTab.TabIndex = 0;
 			this.SingleLineInputTab.Text = "Single Line Input";
 			this.SingleLineInputTab.UseVisualStyleBackColor = true;
@@ -125,13 +135,12 @@
 			// 
 			this.MultiLineInputTab.Controls.Add(this.MultiLineInputSaveBtn);
 			this.MultiLineInputTab.Controls.Add(this.MultiLineInputLoadBtn);
-			this.MultiLineInputTab.Controls.Add(this.MultiLineInputRunBtn);
 			this.MultiLineInputTab.Controls.Add(this.MultiLineInputTextBox);
 			this.MultiLineInputTab.Location = new System.Drawing.Point(4, 25);
 			this.MultiLineInputTab.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.MultiLineInputTab.Name = "MultiLineInputTab";
 			this.MultiLineInputTab.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.MultiLineInputTab.Size = new System.Drawing.Size(671, 583);
+			this.MultiLineInputTab.Size = new System.Drawing.Size(671, 572);
 			this.MultiLineInputTab.TabIndex = 1;
 			this.MultiLineInputTab.Text = "Multi line Input";
 			this.MultiLineInputTab.UseVisualStyleBackColor = true;
@@ -158,16 +167,6 @@
 			this.MultiLineInputLoadBtn.UseVisualStyleBackColor = true;
 			this.MultiLineInputLoadBtn.Click += new System.EventHandler(this.MultiLineInputLoadBtn_Click);
 			// 
-			// MultiLineInputRunBtn
-			// 
-			this.MultiLineInputRunBtn.Location = new System.Drawing.Point(557, 14);
-			this.MultiLineInputRunBtn.Margin = new System.Windows.Forms.Padding(4);
-			this.MultiLineInputRunBtn.Name = "MultiLineInputRunBtn";
-			this.MultiLineInputRunBtn.Size = new System.Drawing.Size(100, 28);
-			this.MultiLineInputRunBtn.TabIndex = 1;
-			this.MultiLineInputRunBtn.Text = "Run";
-			this.MultiLineInputRunBtn.UseVisualStyleBackColor = true;
-			// 
 			// MultiLineInputTextBox
 			// 
 			this.MultiLineInputTextBox.Location = new System.Drawing.Point(20, 49);
@@ -184,21 +183,79 @@
 			// GraphicsPictureBox
 			// 
 			this.GraphicsPictureBox.Dock = System.Windows.Forms.DockStyle.Left;
-			this.GraphicsPictureBox.Location = new System.Drawing.Point(0, 28);
+			this.GraphicsPictureBox.Location = new System.Drawing.Point(0, 0);
 			this.GraphicsPictureBox.Name = "GraphicsPictureBox";
-			this.GraphicsPictureBox.Size = new System.Drawing.Size(708, 612);
+			this.GraphicsPictureBox.Size = new System.Drawing.Size(708, 601);
 			this.GraphicsPictureBox.TabIndex = 3;
 			this.GraphicsPictureBox.TabStop = false;
 			this.GraphicsPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.GraphicsPictureBoxPaint);
 			// 
+			// DrawingPanel
+			// 
+			this.DrawingPanel.Controls.Add(this.GraphicsPictureBox);
+			this.DrawingPanel.Controls.Add(this.CodeInputTabControl);
+			this.DrawingPanel.Location = new System.Drawing.Point(0, 43);
+			this.DrawingPanel.Name = "DrawingPanel";
+			this.DrawingPanel.Size = new System.Drawing.Size(1389, 601);
+			this.DrawingPanel.TabIndex = 4;
+			// 
+			// HelpPanel
+			// 
+			this.HelpPanel.Controls.Add(this.HelpGridView);
+			this.HelpPanel.Location = new System.Drawing.Point(0, 43);
+			this.HelpPanel.Name = "HelpPanel";
+			this.HelpPanel.Size = new System.Drawing.Size(1389, 554);
+			this.HelpPanel.TabIndex = 4;
+			this.HelpPanel.Visible = false;
+			// 
+			// HelpGridView
+			// 
+			this.HelpGridView.AllowUserToAddRows = false;
+			this.HelpGridView.AllowUserToDeleteRows = false;
+			this.HelpGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.HelpGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+			this.HelpGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.HelpGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.CommandColumn,
+            this.ParametersColumn,
+            this.DescriptionColumn});
+			this.HelpGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.HelpGridView.Location = new System.Drawing.Point(0, 0);
+			this.HelpGridView.Name = "HelpGridView";
+			this.HelpGridView.ReadOnly = true;
+			this.HelpGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+			this.HelpGridView.RowTemplate.Height = 24;
+			this.HelpGridView.Size = new System.Drawing.Size(1389, 554);
+			this.HelpGridView.TabIndex = 0;
+			// 
+			// CommandColumn
+			// 
+			this.CommandColumn.HeaderText = "Command";
+			this.CommandColumn.Name = "CommandColumn";
+			this.CommandColumn.ReadOnly = true;
+			// 
+			// ParametersColumn
+			// 
+			this.ParametersColumn.HeaderText = "Parameters";
+			this.ParametersColumn.Name = "ParametersColumn";
+			this.ParametersColumn.ReadOnly = true;
+			// 
+			// DescriptionColumn
+			// 
+			this.DescriptionColumn.HeaderText = "Description";
+			this.DescriptionColumn.Name = "DescriptionColumn";
+			this.DescriptionColumn.ReadOnly = true;
+			// 
 			// GraphicalProgrammingLanguageForm
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
 			this.ClientSize = new System.Drawing.Size(1389, 640);
-			this.Controls.Add(this.GraphicsPictureBox);
-			this.Controls.Add(this.CodeInputTabControl);
+			this.Controls.Add(this.HelpPanel);
 			this.Controls.Add(this.TopMenuStrip);
+			this.Controls.Add(this.DrawingPanel);
 			this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.Name = "GraphicalProgrammingLanguageForm";
 			this.Text = "GraphicalProgrammingLanguageInterface";
@@ -209,6 +266,9 @@
 			this.SingleLineInputTab.PerformLayout();
 			this.MultiLineInputTab.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.GraphicsPictureBox)).EndInit();
+			this.DrawingPanel.ResumeLayout(false);
+			this.HelpPanel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.HelpGridView)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -217,19 +277,24 @@
 		#endregion
 
 		private System.Windows.Forms.MenuStrip TopMenuStrip;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem codeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem homeToolStripMenuItem;
 		private System.Windows.Forms.TabControl CodeInputTabControl;
 		private System.Windows.Forms.TabPage SingleLineInputTab;
 		private System.Windows.Forms.RichTextBox SingleLineOutput;
 		private System.Windows.Forms.TextBox SingleLineInputTextbox;
 		private System.Windows.Forms.TabPage MultiLineInputTab;
 		private System.Windows.Forms.RichTextBox MultiLineInputTextBox;
-		private System.Windows.Forms.Button MultiLineInputRunBtn;
 		private System.Windows.Forms.Button MultiLineInputSaveBtn;
 		private System.Windows.Forms.Button MultiLineInputLoadBtn;
 		private System.Windows.Forms.OpenFileDialog MultiLineInputLoadFileDialog;
 		private System.Windows.Forms.SaveFileDialog MultiLineInputSaveFileDialog;
 		private System.Windows.Forms.PictureBox GraphicsPictureBox;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.Panel DrawingPanel;
+		private System.Windows.Forms.Panel HelpPanel;
+		private System.Windows.Forms.DataGridView HelpGridView;
+		private System.Windows.Forms.DataGridViewTextBoxColumn CommandColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ParametersColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn DescriptionColumn;
 	}
 }

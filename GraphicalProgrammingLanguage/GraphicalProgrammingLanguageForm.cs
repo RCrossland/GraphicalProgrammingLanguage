@@ -171,5 +171,39 @@ namespace GraphicalProgrammingLanguage
 				s.Draw(g);
 			}
 		}
+
+		private void HomeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.HelpPanel.Visible = false;
+			this.DrawingPanel.Visible = true;
+		}
+
+		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.HelpGridView.Rows.Clear();
+
+			string[][] rows = new string[][] {
+				new string[] { "Clear", "", "Clears the current shapes on the canvas." },
+				new string[] { "Loop", "<Integer: Number of times to loop>; <Shape Command: The shape to draw>; ...", "Single line loop which based on the first parameter will iterate the commands." },
+				new string[] { "Loop", "<Integer: NUmber of times to loop> NEW LINE <Shape Command: The shape to draw> NEW LINE EndLoop", "Draws a square in the specified colour." },
+				new string[] { "Run", "<String: File path to a file to run>", "Run commands from a specified file." },
+				new string[] { "MoveTo", "<Colour: Shape colour>, <Integer: X value>, <Integer: Y value>", "If the pen is down MoveTo will draw a line to the specified X and Y." },
+				new string[] { "MoveTo", "<Integer: X value>, <Integer: Y value>", "If the pen is up MoveTo will move the reference to the specified x and y." },
+				new string[] { "Square", "<Colour: Shape colour>, <Integer: Width>", "Draws a square in the specified colour." },
+				new string[] { "Circle", "<Colour: Shape colour>, <Integer: Diameter>", "Draws a circle in the specified colour." },
+				new string[] { "Rectangle", "<Colour: Shape colour>, <Integer: Width>, <Integer: Height>", "Draws a rectangle in the specified colour." },
+				new string[] { "Triangle", "<Colour: Shape colour>, <Integer: Point 1x> <Integer: Point1y>, <Integer: Point2a> <Integer: Point2b>, <Integer: Point3a> <Integer: Point3b>", "Draws a triangle in the specified colour." },
+				new string[] { "Polygon", "<Colour: Shape colour>, <Integer: Point 1x> <Integer: Point1y>, <Integer: Point2a> <Integer: Point2b>, <Integer: Point3a> <Integer: Point3b>", "Draws a polygon in the specified colour." },
+				new string[] { "Repeat", "<Integer: Number of repeats>, <Shape Command: The shape to draw>, <Color: shape colour>, <Optional: Either + or ->, <Integer: Starting point>", "Incrementally repeats a shape command and either + or - the starting point each repeat." }
+			};
+
+			for(int i = 0; i < rows.Length; i++)
+			{
+				this.HelpGridView.Rows.Add(rows[i]);
+			}
+
+			this.HelpPanel.Visible = true;
+			this.DrawingPanel.Visible = false;
+		}
 	}
 }
