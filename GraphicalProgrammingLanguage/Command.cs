@@ -19,7 +19,7 @@ namespace GraphicalProgrammingLanguage
 			currentY = 0;
 		}
 
-		private string[] commands = { "loop", "run", "penup", "pendown", "drawto", "moveto", "repeat",
+		private string[] commands = { "if", "clear", "loop", "run", "penup", "pendown", "drawto", "moveto", "repeat",
 			"circle", "rectangle", "square", "triangle", "polygon" };
 
 		private bool penUp = false;
@@ -532,6 +532,19 @@ namespace GraphicalProgrammingLanguage
 						}
 					}
 
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "clear")
+			{
+				if(commandParameters.Length > 0)
+				{
+					errorMessage = "Clear doesn't have any extra parameters";
+					return false;
+				}
+				else
+				{
 					errorMessage = "";
 					return true;
 				}
@@ -1248,6 +1261,11 @@ namespace GraphicalProgrammingLanguage
 
 				shapeCommands.Add(shape);
 
+				return true;
+			}
+			else if(commandString == "CLEAR")
+			{
+				shapeCommands.Clear();
 				return true;
 			}
 			else
