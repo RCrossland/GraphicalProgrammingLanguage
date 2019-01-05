@@ -24,6 +24,10 @@ namespace GraphicalProgrammingLanguage
 
 		private bool penUp = false;
 
+		// Whether the user is currently in a multi-line action
+		bool inMultiLineCommand = false;
+		List<string> multiLineCommands = new List<String>();
+
 		Dictionary<string, string> variables = new Dictionary<string, string>();
 
 		public string[] SplitUserInput(string userInput)
@@ -187,41 +191,133 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
 
-				if (commandParametersSplit.Length < 2){
-					errorMessage = "Incorrect loop format. E.g. 'Loop <number of loops>; <command>; <command>;...'";
-					return false;
-				}
-
-				if (!ValidateInteger(commandParametersSplit[0], out errorMessage))
+				if(commandParametersSplit.Length == 1)
 				{
-					return false;
-				}
+					//	 Split the commandParameters based on a space
+					string[] loopSplit = commandParameters.Split(' ').ToArray();
+					string[] loopParameters = commandParameters.Split('\n', '\r').ToArray();
 
-				// Loop over the remaining commands and validate each command
-				string[] loopActions = commandParametersSplit.Skip(1).ToArray();
-				for (int i = 0; i < loopActions.Length; i++)
-				{
-					string[] loopActionsSplit = SplitUserInput(loopActions[i]);
-
-					string loopActionsCommand = loopActionsSplit[0];
-					string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
-
-					if(loopActionsCommand.ToLower() == "penup")
+					// Check whether this is the first line of the loop
+					if (inMultiLineCommand)
 					{
-						penUp = true;
-					} else if(loopActionsCommand.ToLower() == "pendown")
-					{
-						penUp = false;
+						// Take the last line of the loop and check for endloop
+						if (String.Equals(loopParameters[loopParameters.Length - 1].ToLower(), "endloop"))
+						{
+							if (multiLineCommands.Count < 2)
+							{
+								// The user has ended a loop block without any commands
+								errorMessage = "The loop was empty";
+								return false;
+							}
+							else
+							{
+								inMultiLineCommand = false;
+								multiLineCommands.Clear();
+
+								//The user wants to quit the loop
+								errorMessage = "";
+								return true;
+							}
+						}
+						else
+						{
+							//Split the last command of the loop
+							string lastLoopInput = loopParameters[loopParameters.Length - 1];
+
+							string[] lastLoopInputSplit = SplitUserInput(lastLoopInput.Trim());
+
+							string lastLoopCommand = lastLoopInputSplit[0];
+							string lastLoopParameter = string.Join(" ", lastLoopInputSplit.Skip(1).ToArray());
+
+							if (lastLoopCommand.ToLower() == "penup")
+							{
+								penUp = true;
+							}
+							else if (lastLoopCommand.ToLower() == "pendown")
+							{
+								penUp = false;
+							}
+
+							//Validate the command
+							if (!ValidateCommand(1, lastLoopCommand, lastLoopParameter, out errorMessage))
+							{
+								return false;
+							}
+							else
+							{
+								multiLineCommands.Add(lastLoopInput);
+								errorMessage = "multilineLoop";
+								return true;
+							}
+						}
 					}
-
-					if(!ValidateCommand(0, loopActionsCommand, loopActionsParameter, out errorMessage))
+					else if (loopSplit.Length == 1 && !String.IsNullOrWhiteSpace(loopSplit[0]))
 					{
+						// First line of the loop. Check that the second parameter is a valid integer
+						if (!ValidateInteger(commandParametersSplit[0], out errorMessage))
+						{
+							return false;
+						}
+						else
+						{
+							inMultiLineCommand = true;
+
+							multiLineCommands.Add(commandParametersSplit[0]);
+
+							errorMessage = "multilineLoop";
+							return true;
+						}
+					}
+					else
+					{
+						errorMessage = "Multi line loop is in the incorrect format. See help for details";
 						return false;
 					}
 				}
+				else if(commandParametersSplit.Length >= 2 && !String.IsNullOrWhiteSpace(commandParametersSplit[1]))
+				{
+					// Ensure the first parameter is a valid integer
+					if (!ValidateInteger(commandParametersSplit[0], out errorMessage))
+					{
+						return false;
+					}
+					else
+					{
+						// Loop over the remaining commands and validate each command
+						string[] loopActions = commandParametersSplit.Skip(1).ToArray();
+						for (int i = 0; i < loopActions.Length; i++)
+						{
+							string[] loopActionsSplit = SplitUserInput(loopActions[i]);
 
-				errorMessage = "";
-				return true;
+							string loopActionsCommand = loopActionsSplit[0];
+							string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+
+							if (loopActionsCommand.ToLower() == "penup")
+							{
+								penUp = true;
+							}
+							else if (loopActionsCommand.ToLower() == "pendown")
+							{
+								penUp = false;
+							}
+
+							if (!ValidateCommand(0, loopActionsCommand, loopActionsParameter, out errorMessage))
+							{
+								// The command is invalid
+								return false;
+							}
+						}
+
+						errorMessage = "";
+						return true;
+					}
+				}
+				else
+				{
+					// Loop in the wrong format
+					errorMessage = "Loop in the wrong format! See help for more details.";
+					return false;
+				}
 			}
 			else if(commandString.ToLower() == "run")
 			{
@@ -548,6 +644,11 @@ namespace GraphicalProgrammingLanguage
 			}
 		}
 
+		public void MultiLineLoop()
+		{
+
+		}
+
 		public bool ExecuteCommand(ArrayList shapeCommands, string commandString, string commandParameters)
 		{
 			ShapeFactory shapeFactory = new ShapeFactory();
@@ -774,21 +875,45 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
 
-				string[] loopActions = commandParametersSplit.Skip(1).ToArray();
-				for (int x = 0; x < Int32.Parse(commandParametersSplit[0]); x++)
+				if (commandParametersSplit.Length == 1)
 				{
-					for (int i = 0; i < loopActions.Length; i++)
+					// Multi line loop
+					string[] loopParameters = commandParameters.Split('\n', '\r').ToArray();
+
+					for(int i = 0; i < Int32.Parse(multiLineCommands[0]); i++)
 					{
-						string[] loopActionsSplit = SplitUserInput(loopActions[i]);
+						for(int d = 1; d < multiLineCommands.Count; d++)
+						{
+							string[] loopInputSplit = SplitUserInput(multiLineCommands[d].Trim());
 
-						string loopActionsCommand = loopActionsSplit[0];
-						string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+							string loopInputCommand = loopInputSplit[0];
+							string loopInputParameter = string.Join(" ", loopInputSplit.Skip(1).ToArray());
 
-						ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
+							ExecuteCommand(shapeCommands, loopInputCommand, loopInputParameter);
+						}
 					}
-				}
 
-				return true;
+					return true;
+				}
+				else
+				{
+					// Single line loop
+					string[] loopActions = commandParametersSplit.Skip(1).ToArray();
+					for (int x = 0; x < Int32.Parse(commandParametersSplit[0]); x++)
+					{
+						for (int i = 0; i < loopActions.Length; i++)
+						{
+							string[] loopActionsSplit = SplitUserInput(loopActions[i]);
+
+							string loopActionsCommand = loopActionsSplit[0];
+							string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+
+							ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
+						}
+					}
+
+					return true;
+				}
 			}
 			else if(commandString == "RECTANGLE")
 			{
