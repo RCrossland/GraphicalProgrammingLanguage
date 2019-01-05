@@ -1221,6 +1221,216 @@ namespace GraphicalProgrammingLanguageTests
 			string expectedErrorMessage = "Clear doesn't have any extra parameters.";
 			bool expected = false;
 
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid equals to if statement is accepted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Equals_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "2==2; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid equals to if statement with a false boolean is spotted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Equals_False_Bool_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "2==3; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "'2==3' returned false.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid greater than if statement is accepted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Greater_Than_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5>2; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid greater than if statement with a false boolean is spotted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Greater_Than_False_Bool_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "1>2; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "'1>2' returned false.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid less than if statement is accepted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Less_Than_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "2<5; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid less than if statement with a false boolean is spotted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Less_Than_False_Bool_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "2<1; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "'2<1' returned false.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether a valid equals to if statement accepts with a valid variable.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Valid_Variable_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "variable1==10; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			command.ExecuteCommand(null, "variable1 = 10", "");
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether an invalid string is spotted on an if statement.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Invalid_String_Variable_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "variable1==10; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "Either side of the conditional must be an integer. E.g. <Integer> == <Integer>";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether an invalid number of parameters to an if statement.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Invalid_Parameter_Length_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==10==10; rectangle red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "The If statement block can only contain two conditionals. E.g. 'if <integer> == <integer>'";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether an invalid command to an if statement.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_If_Invalid_Command_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==5; invalid red, 20, 10";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "invalid is an invalid command. Please see 'help' for a list of commands.";
+			bool expected = false;
 
 			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");

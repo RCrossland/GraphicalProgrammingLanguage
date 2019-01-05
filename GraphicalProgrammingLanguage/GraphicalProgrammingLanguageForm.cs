@@ -185,7 +185,8 @@ namespace GraphicalProgrammingLanguage
 			string[][] rows = new string[][] {
 				new string[] { "Clear", "", "Clears the current shapes on the canvas." },
 				new string[] { "Loop", "<Integer: Number of times to loop>; <Shape Command: The shape to draw>; ...", "Single line loop which based on the first parameter will iterate the commands." },
-				new string[] { "Loop", "<Integer: NUmber of times to loop> NEW LINE <Shape Command: The shape to draw> NEW LINE EndLoop", "Draws a square in the specified colour." },
+				new string[] { "Loop", "<Integer: Number of times to loop> NEW LINE <Shape Command: The shape to draw> NEW LINE EndLoop", "Draws a square in the specified colour." },
+				new string[] { "If", "<Integer> <Conditional: ==, <, >> <Integer>; <Shape Command; The shape to draw>; ...", "If the conditional is true the shape commands will be ran." },
 				new string[] { "Run", "<String: File path to a file to run>", "Run commands from a specified file." },
 				new string[] { "MoveTo", "<Colour: Shape colour>, <Integer: X value>, <Integer: Y value>", "If the pen is down MoveTo will draw a line to the specified X and Y." },
 				new string[] { "MoveTo", "<Integer: X value>, <Integer: Y value>", "If the pen is up MoveTo will move the reference to the specified x and y." },

@@ -220,9 +220,114 @@ namespace GraphicalProgrammingLanguage
 				else if(commandParametersSplit.Length >= 2 && !String.IsNullOrWhiteSpace(commandParametersSplit[1]))
 				{
 					// Single line if statement
+					string[] splitConditional;
+					string conditional;
+					int integerA, integerB;
 
-					errorMessage = "";
-					return true;
+					// Find whether the command is valid
+					if(commandParametersSplit[0].Contains("=="))
+					{
+						splitConditional = commandParametersSplit[0].Split(new string[] { "==" }, StringSplitOptions.None);
+						conditional = "==";
+					}
+					else if (commandParametersSplit[0].Contains(">"))
+					{
+						splitConditional = commandParametersSplit[0].Split('>');
+						conditional = ">";
+					}
+					else if (commandParametersSplit[0].Contains("<"))
+					{
+						splitConditional = commandParametersSplit[0].Split('<');
+						conditional = "<";
+					}
+					else
+					{
+						errorMessage = "Conditional couldn't be worked out.";
+						return false;
+					}
+
+					// Check the length of the conditional parameters
+					if(splitConditional.Length == 2)
+					{
+						if (variables.ContainsKey(splitConditional[0].Trim().ToUpper()))
+						{
+							integerA = Int32.Parse(variables[splitConditional[0].Trim().ToUpper()]);
+						}
+						else if(ValidateInteger(splitConditional[0], out errorMessage))
+						{
+							integerA = Int32.Parse(splitConditional[0]);
+						}
+						else
+						{
+							errorMessage = "Either side of the conditional must be an integer. E.g. <Integer> == <Integer>";
+							return false;
+						}
+
+						if (variables.ContainsKey(splitConditional[1].Trim().ToUpper()))
+						{
+							integerB = Int32.Parse(variables[splitConditional[1].Trim().ToUpper()]);
+						}
+						else if (ValidateInteger(splitConditional[1], out errorMessage))
+						{
+							integerB = Int32.Parse(splitConditional[1]);
+						}
+						else
+						{
+							errorMessage = "Either side of the conditional must be an integer. E.g. <Integer> == <Integer>";
+							return false;
+						}
+
+						if(conditional == "==")
+						{
+							if(integerA != integerB)
+							{
+								errorMessage = "'" + splitConditional[0] + "==" + splitConditional[1] + "' returned false.";
+								return false;
+							}
+						}
+						else if (conditional == ">")
+						{
+							if (!(integerA > integerB))
+							{
+								errorMessage = "'" + splitConditional[0] + ">" + splitConditional[1] + "' returned false.";
+								return false;
+							}
+						}
+						else if (conditional == "<")
+						{
+							if (!(integerA < integerB))
+							{
+								errorMessage = "'" + splitConditional[0] + "<" + splitConditional[1] + "' returned false.";
+								return false;
+							}
+						}
+						else
+						{
+							// Code should never be reached
+							errorMessage = "";
+							return false;
+						}
+
+						for (int i = 1; i < commandParametersSplit.Length; i++) {
+							string[] conditionalActionSplit = SplitUserInput(commandParametersSplit[i]);
+
+							string conditionalActionsCommand = conditionalActionSplit[0];
+							string conditionalActionsParameter = string.Join(" ", conditionalActionSplit.Skip(1).ToArray());
+
+							if(!ValidateCommand(1, conditionalActionsCommand, conditionalActionsParameter, out errorMessage))
+							{
+								return false;
+							}
+						}
+
+						errorMessage = "";
+						return true;
+					}
+					else
+					{
+						errorMessage = "The If statement block can only contain two conditionals. E.g. 'if <integer> == <integer>'";
+						return false;
+					}
 				}
 				else
 				{
@@ -993,6 +1098,31 @@ namespace GraphicalProgrammingLanguage
 
 							ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
 						}
+					}
+
+					return true;
+				}
+			}
+			else if(commandString == "IF")
+			{
+				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
+
+				if (commandParameters.Length == 1)
+				{
+					// MultiLine if statement
+					return true;
+				}
+				else
+				{
+					// Single line if statement
+					for(int i = 1; i < commandParametersSplit.Length; i++)
+					{
+						string[] conditionalActionSplit = SplitUserInput(commandParametersSplit[i]);
+
+						string conditionalActionsCommand = conditionalActionSplit[0];
+						string conditionalActionsParameter = string.Join(" ", conditionalActionSplit.Skip(1).ToArray());
+
+						ExecuteCommand(shapeCommands, conditionalActionsCommand, conditionalActionsParameter);
 					}
 
 					return true;
