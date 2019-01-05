@@ -187,6 +187,30 @@ namespace GraphicalProgrammingLanguage
 					return true;
 				}
 			}
+			else if(commandString.ToLower() == "if")
+			{
+				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
+
+				if(commandParameters.Length == 1)
+				{
+					// MultiLine if statement
+					errorMessage = "";
+					return true;
+				}
+				else if(commandParametersSplit.Length >= 2 && !String.IsNullOrWhiteSpace(commandParametersSplit[1]))
+				{
+					// Single line if statement
+
+					errorMessage = "";
+					return true;
+				}
+				else
+				{
+					// Loop condition in the wrong format
+					errorMessage = "If statement if the wrong format! See help for more details.";
+					return false;
+				}
+			}
 			else if(commandString.ToLower() == "loop")
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
