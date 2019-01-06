@@ -114,9 +114,18 @@ namespace GraphicalProgrammingLanguage
 				}
 				else
 				{
-					// The command is not recognised. This could mean the user is trying to perform another programming action and needs to be checked.
-					errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
-					return false;
+					if (String.IsNullOrWhiteSpace(commandString))
+					{
+						// The user didn't enter a command
+						errorMessage = "";
+						return false;
+					}
+					else
+					{
+						// The command is not recognised. This could mean the user is trying to perform another programming action and needs to be checked.
+						errorMessage = commandString + " is an invalid command. Please see 'help' for a list of commands.";
+						return false;
+					}
 				}
 			}
 
@@ -975,6 +984,11 @@ namespace GraphicalProgrammingLanguage
 		/// <returns>Bool: Whether the supplied string was a point.</returns>
 		public bool ValidateFile(string filePath, out string errorMessage)
 		{
+			if (filePath.Contains('"'))
+			{
+				filePath = filePath.Replace('"', ' ').Trim();
+			}
+
 			if (Path.GetExtension(filePath) != ".txt")
 			{
 				errorMessage = "The file extension must be .txt";

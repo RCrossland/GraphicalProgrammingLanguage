@@ -88,6 +88,11 @@ namespace GraphicalProgrammingLanguage
 
 			SingleLineInputTextbox.Text = "";
 
+			if (filePath.Contains('"'))
+			{
+				filePath = filePath.Replace('"', ' ').Trim();
+			}
+
 			string errorMessage;
 			if (!command.ValidateFile(filePath, out errorMessage))
 			{
@@ -102,26 +107,108 @@ namespace GraphicalProgrammingLanguage
 
 				string line;
 				int lineNumber = 0;
+
+				// Global input line variable
+				bool inMultiLine = false;
+				string globalCommand = "";
+				string globalParameters = "";
+
 				while ((line = file.ReadLine()) != null)
 				{
 					// Iterate the file line by line
 					// Increment the line number
 					lineNumber++;
 
-					string[] splitUserInput = line.Split(' ');
+					bool validCommand = false;
+					string[] lineUserInputSplit = line.Split(' ');
 
 					// Split the line of the file into command and parameters
-					string commandString = splitUserInput[0];
-					string commandParameters = string.Join(" ", splitUserInput.Skip(1).ToArray());
+					string lineCommand = lineUserInputSplit[0];
+					string lineParameters = string.Join(" ", lineUserInputSplit.Skip(1).ToArray());
 
-					// Pass each line to the validator along with the line number
-					bool validCommand = command.ValidateCommand(lineNumber, commandString, commandParameters, out errorMessage);
+					// If the command is in a multiline loop
+					if (inMultiLine)
+					{
+						string multiLineParameters = globalParameters + "\n\r" + lineCommand + " " + lineParameters;
+						// If it is validate the command
+						if (command.ValidateCommand(lineNumber, globalCommand, multiLineParameters, out errorMessage))
+						{
+							// Concatenate the command and parameters with \n\r
+							globalParameters = globalParameters + "\n\r" + lineCommand + " " + lineParameters;
+
+							validCommand = true;
+						}
+						else
+						{
+							// Return the error message to the user and break
+							this.SingleLineOutput.SelectionColor = Color.Red;
+							this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + errorMessage + "\n");
+							this.SingleLineOutput.ScrollToCaret();
+							continue;
+						}
+					}
+					else
+					{
+						if (String.Equals(lineCommand.ToLower(), "if") || String.Equals(lineCommand.ToLower(), "loop"))
+						{
+							// If the command string lowered contain 'if' or 'loop'
+
+							// Split the parameters based on ';'
+							string[] lineParametersSplit = lineParameters.Split(';');
+
+							if (lineParametersSplit.Length == 1)
+							{
+								// If the parameters is of length 1. It is a multiline loop
+
+								// Set the global command string to be 'if'/'loop'
+								globalCommand = lineCommand;
+								globalParameters = lineParameters;
+								// Set the multiLine bool to true
+								inMultiLine = true;
+
+								validCommand = command.ValidateCommand(lineNumber, globalCommand, globalParameters, out errorMessage);
+							}
+							else
+							{
+								// Else it is a singleline loop
+								// Set the global multiline bool to false
+								inMultiLine = false;
+								// Set the global command string to the user input
+								globalCommand = lineCommand;
+								// Set the global parameters string to the user input
+								globalParameters = lineParameters;
+
+								// Pass each line to the validator along with the line number
+								validCommand = command.ValidateCommand(lineNumber, globalCommand, globalParameters, out errorMessage);
+							}
+						}
+						else
+						{
+							// Else
+							// Set the global multiline bool to false
+							inMultiLine = false;
+							// Set the global command string to the user input
+							globalCommand = lineCommand;
+							// Set the global parameters string to the user input
+							globalParameters = lineParameters;
+
+							// Pass each line to the validator along with the line number
+							validCommand = command.ValidateCommand(lineNumber, globalCommand, globalParameters, out errorMessage);
+						}
+					}
 
 					if (!validCommand)
 					{
 						// If the user has not entered a valid command
 						this.SingleLineOutput.SelectionColor = Color.Red;
 						this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + errorMessage + "\n");
+						this.SingleLineOutput.ScrollToCaret();
+					}
+					else if (validCommand && String.Equals(errorMessage, "multiline"))
+					{
+						// Add the command to the textbox
+						this.SingleLineOutput.SelectionColor = Color.Green;
+						this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + line + "\n");
 						this.SingleLineOutput.ScrollToCaret();
 					}
 					else
@@ -133,7 +220,7 @@ namespace GraphicalProgrammingLanguage
 						this.SingleLineOutput.ScrollToCaret();
 
 
-						if (command.ExecuteCommand(shapes, commandString, commandParameters))
+						if (command.ExecuteCommand(shapes, globalCommand, globalParameters))
 						{
 							this.GraphicsPictureBox.Refresh();
 						}
