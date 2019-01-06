@@ -214,7 +214,7 @@ namespace GraphicalProgrammingLanguage
 				if(commandParametersSplit.Length == 1)
 				{
 					// Multi-line if statement
-					string[] conditionalSplit = commandParameters.Split(' ').ToArray();
+					//string[] conditionalSplit = commandParameters.Split(' ').ToArray();
 					string[] conditionalParameters = commandParameters.Split('\n', '\r').ToArray();
 
 					// Check whether this is the first line of the conditional
@@ -234,6 +234,7 @@ namespace GraphicalProgrammingLanguage
 							else
 							{
 								//The user wants to quit the conditional loop
+								inMultiLineCommand = false;
 								errorMessage = "";
 								return true;
 							}
@@ -270,7 +271,7 @@ namespace GraphicalProgrammingLanguage
 							}
 						}
 					}
-					else if (conditionalSplit.Length == 1 && !String.IsNullOrWhiteSpace(conditionalSplit[0]))
+					else if (commandParametersSplit.Length == 1 && !String.IsNullOrWhiteSpace(commandParametersSplit[0]))
 					{
 						string[] splitConditional;
 						string conditional;
@@ -305,9 +306,9 @@ namespace GraphicalProgrammingLanguage
 							{
 								integerA = Int32.Parse(variables[splitConditional[0].Trim().ToUpper()]);
 							}
-							else if (ValidateInteger(splitConditional[0], out errorMessage))
+							else if (ValidateInteger(splitConditional[0].Trim(), out errorMessage))
 							{
-								integerA = Int32.Parse(splitConditional[0]);
+								integerA = Int32.Parse(splitConditional[0].Trim());
 							}
 							else
 							{
@@ -319,9 +320,9 @@ namespace GraphicalProgrammingLanguage
 							{
 								integerB = Int32.Parse(variables[splitConditional[1].Trim().ToUpper()]);
 							}
-							else if (ValidateInteger(splitConditional[1], out errorMessage))
+							else if (ValidateInteger(splitConditional[1].Trim(), out errorMessage))
 							{
-								integerB = Int32.Parse(splitConditional[1]);
+								integerB = Int32.Parse(splitConditional[1].Trim());
 							}
 							else
 							{
@@ -524,6 +525,7 @@ namespace GraphicalProgrammingLanguage
 							else
 							{
 								//The user wants to quit the loop
+								inMultiLineCommand = false;
 								errorMessage = "";
 								return true;
 							}
@@ -1241,6 +1243,7 @@ namespace GraphicalProgrammingLanguage
 						}
 					}
 
+					multiLineCommands.Clear();
 					return true;
 				}
 				else
@@ -1279,6 +1282,8 @@ namespace GraphicalProgrammingLanguage
 
 						ExecuteCommand(shapeCommands, conditionalActionsCommand, conditionalActionsParameter);
 					}
+
+					multiLineCommands.Clear();
 
 					return true;
 				}
