@@ -36,5 +36,9 @@ namespace GraphicalProgrammingLanguage
 			this.x = list[0];
 			this.y = list[1];
 		}
+
+		public virtual void SetTexture(string textureFile)
+		{
+		}
 	}
 }

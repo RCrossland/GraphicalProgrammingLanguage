@@ -918,6 +918,52 @@ namespace GraphicalProgrammingLanguageTests
 		}
 
 		/// <summary>
+		/// Tests whether texture rectangle with valid parameters is accepted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Rectangle_Texture_Valid_Parameters()
+		{
+			Command command = new Command();
+
+			string testFile = System.AppDomain.CurrentDomain.BaseDirectory;
+
+			string testCommand = "rectangleTexture";
+			string testParameters = "red, " + testFile + "\\..\\..\\TestImage.png, 10, 20";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests whether texture rectangle with an invalid file parameter is spotted.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Rectangle_Texture_Invalid_Parameters()
+		{
+			Command command = new Command();
+
+			string testFile = System.AppDomain.CurrentDomain.BaseDirectory;
+
+			string testCommand = "rectangleTexture";
+			string testParameters = "red, " + testFile + "\\..\\..\\TestImage.jpg, 10, 20";
+
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "The file extension must be .png";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
 		/// Tests whether a valid square is accepted.
 		/// </summary>
 		[TestMethod]
@@ -933,7 +979,6 @@ namespace GraphicalProgrammingLanguageTests
 
 			string expectedErrorMessage = "";
 			bool expected = true;
-
 
 			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");

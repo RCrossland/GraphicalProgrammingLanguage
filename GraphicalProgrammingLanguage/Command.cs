@@ -21,7 +21,7 @@ namespace GraphicalProgrammingLanguage
 
 		// An array of accepted commands.
 		private string[] commands = { "if", "clear", "loop", "run", "penup", "pendown", "drawto", "moveto", "repeat",
-			"circle", "rectangle", "square", "triangle", "polygon" };
+			"circle", "rectangle", "rectangletexture", "square", "triangle", "polygon" };
 
 		private bool penUp = false;
 
@@ -648,7 +648,7 @@ namespace GraphicalProgrammingLanguage
 					errorMessage = "The run command must have a file path specified";
 					return false;
 				}
-				else if (!ValidateFile(commandParametersSplit[0], out errorMessage))
+				else if (!ValidateFile(commandParametersSplit[0], ".txt", out errorMessage))
 				{
 					return false;
 				}
@@ -769,6 +769,38 @@ namespace GraphicalProgrammingLanguage
 				else
 				{
 					// The rectangle has been entered correctly
+					errorMessage = "";
+					return true;
+				}
+			}
+			else if(commandString.ToLower() == "rectangletexture")
+			{
+				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
+
+				if (commandParametersSplit.Length != 4)
+				{
+					// Check the correct number of parameters are passed
+					errorMessage = "Texture rectangle expects 4 parameters to be passed.";
+					return false;
+				}
+				else if(!ValidateColour(commandParametersSplit[0], out errorMessage))
+				{
+					return false;
+				}
+				else if(!ValidateFile(commandParametersSplit[1], ".png", out errorMessage))
+				{
+					return false;
+				}
+				else if(!ValidateInteger(commandParametersSplit[2], out errorMessage))
+				{
+					return false;
+				}
+				else if(!ValidateInteger(commandParametersSplit[3], out errorMessage))
+				{
+					return false;
+				}
+				else
+				{
 					errorMessage = "";
 					return true;
 				}
@@ -982,16 +1014,16 @@ namespace GraphicalProgrammingLanguage
 		/// <param name="filePath">String: The value to check for a file.</param>
 		/// <param name="errorMessage">String: The error message to be returned from the function.</param>
 		/// <returns>Bool: Whether the supplied string was a point.</returns>
-		public bool ValidateFile(string filePath, out string errorMessage)
+		public bool ValidateFile(string filePath, string fileExtension, out string errorMessage)
 		{
 			if (filePath.Contains('"'))
 			{
 				filePath = filePath.Replace('"', ' ').Trim();
 			}
 
-			if (Path.GetExtension(filePath) != ".txt")
+			if (Path.GetExtension(filePath) != fileExtension)
 			{
-				errorMessage = "The file extension must be .txt";
+				errorMessage = "The file extension must be " + fileExtension;
 				return false;
 			}
 			else if (!File.Exists(filePath))
@@ -1365,6 +1397,63 @@ namespace GraphicalProgrammingLanguage
 
 				// Get the shape and set the values
 				Shape shape = shapeFactory.GetShape(commandString);
+				shape.Set(Color.FromName(commandColour), currentX, currentY, pointX, pointY);
+
+				// Add the shape to the ArrayList
+				shapeCommands.Add(shape);
+
+				return true;
+			}
+			else if(commandString == "RECTANGLETEXTURE")
+			{
+				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
+
+				string commandColour = commandParametersSplit[0];
+				string textureFilePath = commandParametersSplit[1];
+				var inputPointX = commandParametersSplit[2];
+				var inputPointY = commandParametersSplit[3];
+
+				int pointX = 0;
+				int pointY = 0;
+
+				if (Regex.IsMatch(inputPointX, "^[0-9]+$"))
+				{
+					pointX = Int32.Parse(inputPointX);
+				}
+				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
+				{
+					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
+				}
+
+				if (Regex.IsMatch(inputPointY, "^[0-9]+$"))
+				{
+					pointY = Int32.Parse(inputPointY);
+				}
+				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
+				{
+					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+				}
+				else
+				{
+					return false;
+				}
+
+				if (textureFilePath.Contains('"'))
+				{
+					textureFilePath = textureFilePath.Replace('"', ' ').Trim();
+				}
+				else if (textureFilePath.Contains("\\"))
+				{
+					textureFilePath = textureFilePath.Replace('/', ' ').Trim();
+				}
+
+				// Get the shape and set the values
+				Shape shape = shapeFactory.GetShape(commandString);
+				shape.SetTexture(textureFilePath);
 				shape.Set(Color.FromName(commandColour), currentX, currentY, pointX, pointY);
 
 				// Add the shape to the ArrayList

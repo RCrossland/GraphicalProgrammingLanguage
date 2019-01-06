@@ -94,7 +94,7 @@ namespace GraphicalProgrammingLanguage
 			}
 
 			string errorMessage;
-			if (!command.ValidateFile(filePath, out errorMessage))
+			if (!command.ValidateFile(filePath, ".txt", out errorMessage))
 			{
 				this.SingleLineOutput.SelectionColor = Color.Red;
 				this.SingleLineOutput.AppendText(errorMessage);

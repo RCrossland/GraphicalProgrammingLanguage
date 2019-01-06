@@ -9,6 +9,7 @@ namespace GraphicalProgrammingLanguage
 {
 	class Rectangle:Shape
 	{
+		TextureBrush tbrush;
 		int width, height;
 		
 		public Rectangle() : base()
@@ -41,8 +42,19 @@ namespace GraphicalProgrammingLanguage
 		/// <param name="g">The graphics panel of where to draw the rectangle.</param>
 		public override void Draw(Graphics g)
 		{
+			if (tbrush != null)
+			{
+				g.FillRectangle(tbrush, x, y, height, width);
+			}
+
 			Pen p = new Pen(colour, 2);
 			g.DrawRectangle(p, x, y, height, width);
+		}
+
+		public override void SetTexture(string textureFile)
+		{
+			Image image = new Bitmap(textureFile);
+			tbrush = new TextureBrush(image);
 		}
 	}
 }
