@@ -1067,7 +1067,16 @@ namespace GraphicalProgrammingLanguage
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
 				// 'Repeat <no of iterations>, <shape>, <colour>, <command operator (+/=)>, <points>....'
-				int numberOfIterations = Int32.Parse(commandParametersSplit[0]);
+				int numberOfIterations;
+				try
+				{
+					numberOfIterations = Int32.Parse(commandParametersSplit[0]);
+				}
+				catch (System.FormatException)
+				{
+					Console.WriteLine("Cannot parse " + commandParametersSplit[0] + " to an integer");
+					throw;
+				}
 				string shapeCommandString = commandParametersSplit[1];
 				string commandColour = commandParametersSplit[2];
 				string commandOperator = commandParametersSplit[3];
@@ -1083,7 +1092,14 @@ namespace GraphicalProgrammingLanguage
 						{
 							if(Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+								try
+								{
+									point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+								}
+								catch (FormatException)
+								{
+									throw;
+								}
 							}
 							else
 							{
@@ -1092,7 +1108,14 @@ namespace GraphicalProgrammingLanguage
 						}
 						else
 						{
-							point = Int32.Parse(inputPoint);
+							try
+							{
+								point = Int32.Parse(inputPoint);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
 						}
 
 						if (String.Equals(commandOperator, "+"))
@@ -1120,7 +1143,14 @@ namespace GraphicalProgrammingLanguage
 						{
 							if(Regex.IsMatch(variables[inputPointX.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+								try
+								{
+									pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+								}
+								catch (FormatException)
+								{
+									throw;
+								}
 							} 
 							else
 							{
@@ -1129,14 +1159,28 @@ namespace GraphicalProgrammingLanguage
 						}
 						else
 						{
-							pointX = Int32.Parse(inputPointX);
+							try
+							{
+								pointX = Int32.Parse(inputPointX);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
 						}
 
 						if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 						{
 							if (Regex.IsMatch(variables[inputPointY.Trim().ToUpper()], "^[0-9]+$"))
 							{
-								pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+								try
+								{
+									pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+								}
+								catch (FormatException)
+								{
+									throw;
+								}
 							}
 							else
 							{
@@ -1145,7 +1189,14 @@ namespace GraphicalProgrammingLanguage
 						}
 						else
 						{
-							pointY = Int32.Parse(inputPointY);
+							try
+							{
+								pointY = Int32.Parse(inputPointY);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
 						}
 
 						if (String.Equals(commandOperator, "+"))
@@ -1204,21 +1255,35 @@ namespace GraphicalProgrammingLanguage
 
 						if (String.Equals(commandOperator, "+"))
 						{
-							calculatedPoint1X = Int32.Parse(points1Split[0]);
-							calculatedPoint1Y = Int32.Parse(points1Split[1]);
-							calculatedPoint2X = Int32.Parse(points2Split[0]) * (i + 1);
-							calculatedPoint2Y = Int32.Parse(points2Split[1]) * (i + 1);
-							calculatedPoint3X = Int32.Parse(points3Split[0]) * (i + 1);
-							calculatedPoint3Y = Int32.Parse(points3Split[1]) * (i + 1);
+							try
+							{
+								calculatedPoint1X = Int32.Parse(points1Split[0]);
+								calculatedPoint1Y = Int32.Parse(points1Split[1]);
+								calculatedPoint2X = Int32.Parse(points2Split[0]) * (i + 1);
+								calculatedPoint2Y = Int32.Parse(points2Split[1]) * (i + 1);
+								calculatedPoint3X = Int32.Parse(points3Split[0]) * (i + 1);
+								calculatedPoint3Y = Int32.Parse(points3Split[1]) * (i + 1);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
 						}
 						else
 						{
-							calculatedPoint1X = Int32.Parse(points1Split[0]);
-							calculatedPoint1Y = Int32.Parse(points1Split[1]);
-							calculatedPoint2X = Int32.Parse(points2Split[0]) / (i + 1);
-							calculatedPoint2Y = Int32.Parse(points2Split[1]) / (i + 1);
-							calculatedPoint3X = Int32.Parse(points3Split[0]) / (i + 1);
-							calculatedPoint3Y = Int32.Parse(points3Split[1]) / (i + 1);
+							try
+							{
+								calculatedPoint1X = Int32.Parse(points1Split[0]);
+								calculatedPoint1Y = Int32.Parse(points1Split[1]);
+								calculatedPoint2X = Int32.Parse(points2Split[0]) / (i + 1);
+								calculatedPoint2Y = Int32.Parse(points2Split[1]) / (i + 1);
+								calculatedPoint3X = Int32.Parse(points3Split[0]) / (i + 1);
+								calculatedPoint3Y = Int32.Parse(points3Split[1]) / (i + 1);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
 						}
 
 						string shapeCommandParameters = commandColour + "," + (calculatedPoint1X + " " + calculatedPoint1Y) + "," +
@@ -1249,13 +1314,27 @@ namespace GraphicalProgrammingLanguage
 
 							if(String.Equals(commandParametersSplit[3], "+"))
 							{
-								splitPointX = Int32.Parse(splitPoints[0]) * (i + 1);
-								splitPointY = Int32.Parse(splitPoints[1]) * (i + 1);
+								try
+								{
+									splitPointX = Int32.Parse(splitPoints[0]) * (i + 1);
+									splitPointY = Int32.Parse(splitPoints[1]) * (i + 1);
+								}
+								catch (FormatException)
+								{
+									throw;
+								}
 							}
 							else
 							{
-								splitPointX = Int32.Parse(splitPoints[0]) / (i + 1);
-								splitPointY = Int32.Parse(splitPoints[1]) / (i + 1);
+								try
+								{
+									splitPointX = Int32.Parse(splitPoints[0]) / (i + 1);
+									splitPointY = Int32.Parse(splitPoints[1]) / (i + 1);
+								}
+								catch (FormatException)
+								{
+									throw;
+								}
 							}
 
 							shapeCommandParameters = shapeCommandParameters + "," + splitPointX.ToString() + " " + splitPointY.ToString();

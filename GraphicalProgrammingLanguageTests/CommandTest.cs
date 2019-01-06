@@ -1677,5 +1677,13 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
+
+		[TestMethod]
+		[ExpectedException(typeof(FormatException), "The expected exception was not thrown.")]
+		public void Test_Execute_Repeat_Command_Exception()
+		{
+			Command command = new Command();
+			command.ExecuteCommand(null, "repeat", "five, square red, +, 10");
+		}
 	}
 }
