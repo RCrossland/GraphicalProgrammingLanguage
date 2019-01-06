@@ -1435,5 +1435,202 @@ namespace GraphicalProgrammingLanguageTests
 			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
 			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
 		}
+
+		/// <summary>
+		/// Tests a multi line if statement with valid parameters and equals bool that is true.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Valid_Equals_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==5";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// Add a rectangle command to the if statement
+			testParameters = "5==5 \n\r rectangle red, 10, 20";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// End the if statement loop
+			testParameters = "5==5 \n\r rectangle red, 10, 20 \n\r endif";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with valid parameters and less than bool that is true.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Valid_Less_Than_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==5";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// Add a rectangle command to the if statement
+			testParameters = "1<5 \n\r rectangle red, 10, 20";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// End the if statement loop
+			testParameters = "1<5 \n\r rectangle red, 10, 20 \n\r endif";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with valid parameters and greater than bool that is true.
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Valid_Greater_Than_Parameters()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "10>5";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// Add a rectangle command to the if statement
+			testParameters = "10>5 \n\r rectangle red, 10, 20";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// End the if statement loop
+			testParameters = "10>5 \n\r rectangle red, 10, 20 \n\r endif";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with a boolean that is false
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_False_Bool()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==1";
+
+			// Initate the if statement
+			string actualErrorMessage = "";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "'5==1' returned false.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with an empty conditional block
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Empty_Block()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==5";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+
+			// End the if statement loop
+			testParameters = "5==5 \n\r endif";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "The conditional block was empty.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with an invalid command
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Invalid_Command()
+		{
+			Command command = new Command();
+
+			string testCommand = "if";
+			string testParameters = "5==5";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// End the if statement loop
+			testParameters = "5==5 \n\r invalid red, 10, 20";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "invalid is an invalid command. Please see 'help' for a list of commands.";
+			bool expected = false;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
+
+		/// <summary>
+		/// Tests a multi line if statement with an invalid command
+		/// </summary>
+		[TestMethod]
+		public void Test_Command_Multi_Line_Loop_Valid_Variable()
+		{
+			Command command = new Command();
+
+			// Set the variable
+			command.ExecuteCommand(null, "variable1=10", "");
+
+			string testCommand = "if";
+			string testParameters = "10==variable1";
+
+			// Initiate the if statement
+			string actualErrorMessage = "";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			testParameters = "5==5 \n\r rectangle red, variable1, 20";
+			command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			// End the if statement loop
+			testParameters = "5==5 \n\r rectangle red, variable1, 20 \n\r endif";
+			bool actual = command.ValidateCommand(1, testCommand, testParameters, out actualErrorMessage);
+
+			string expectedErrorMessage = "";
+			bool expected = true;
+
+			Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "The error messages were different.");
+			Assert.AreEqual(expected, actual, "The wrong boolean was returned.");
+		}
 	}
 }

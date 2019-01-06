@@ -211,11 +211,171 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
 
-				if(commandParameters.Length == 1)
+				if(commandParametersSplit.Length == 1)
 				{
-					// MultiLine if statement
-					errorMessage = "";
-					return true;
+					// Multi-line if statement
+					string[] conditionalSplit = commandParameters.Split(' ').ToArray();
+					string[] conditionalParameters = commandParameters.Split('\n', '\r').ToArray();
+
+					// Check whether this is the first line of the conditional
+					if (inMultiLineCommand)
+					{
+						if(String.Equals(conditionalParameters[conditionalParameters.Length - 1].Trim().ToLower(), "endif"))
+						{
+							if(multiLineCommands.Count < 1)
+							{
+								// The user has ended a loop block that was empty
+								inMultiLineCommand = false;
+								multiLineCommands.Clear();
+
+								errorMessage = "The conditional block was empty.";
+								return false;
+							}
+							else
+							{
+								//The user wants to quit the conditional loop
+								errorMessage = "";
+								return true;
+							}
+						}
+						else
+						{
+							//Split the last command of the loop
+							string lastConditionalInput = conditionalParameters[conditionalParameters.Length - 1];
+
+							string[] lastConditionalInputSplit = SplitUserInput(lastConditionalInput.Trim());
+
+							string lastConditionalCommand = lastConditionalInputSplit[0];
+							string lastConditionalParameter = string.Join(" ", lastConditionalInputSplit.Skip(1).ToArray());
+
+							if (lastConditionalCommand.ToLower() == "penup")
+							{
+								penUp = true;
+							}
+							else if (lastConditionalCommand.ToLower() == "pendown")
+							{
+								penUp = false;
+							}
+
+							//Validate the command
+							if (!ValidateCommand(1, lastConditionalCommand, lastConditionalParameter, out errorMessage))
+							{
+								return false;
+							}
+							else
+							{
+								multiLineCommands.Add(lastConditionalInput);
+								errorMessage = "multiline";
+								return true;
+							}
+						}
+					}
+					else if (conditionalSplit.Length == 1 && !String.IsNullOrWhiteSpace(conditionalSplit[0]))
+					{
+						string[] splitConditional;
+						string conditional;
+						int integerA, integerB;
+
+						// Find whether the command is valid
+						if (commandParametersSplit[0].Contains("=="))
+						{
+							splitConditional = commandParametersSplit[0].Split(new string[] { "==" }, StringSplitOptions.None);
+							conditional = "==";
+						}
+						else if (commandParametersSplit[0].Contains(">"))
+						{
+							splitConditional = commandParametersSplit[0].Split('>');
+							conditional = ">";
+						}
+						else if (commandParametersSplit[0].Contains("<"))
+						{
+							splitConditional = commandParametersSplit[0].Split('<');
+							conditional = "<";
+						}
+						else
+						{
+							errorMessage = "Conditional couldn't be worked out.";
+							return false;
+						}
+
+						// Check the length of the conditional parameters
+						if (splitConditional.Length == 2)
+						{
+							if (variables.ContainsKey(splitConditional[0].Trim().ToUpper()))
+							{
+								integerA = Int32.Parse(variables[splitConditional[0].Trim().ToUpper()]);
+							}
+							else if (ValidateInteger(splitConditional[0], out errorMessage))
+							{
+								integerA = Int32.Parse(splitConditional[0]);
+							}
+							else
+							{
+								errorMessage = "Either side of the conditional must be an integer. E.g. <Integer> == <Integer>";
+								return false;
+							}
+
+							if (variables.ContainsKey(splitConditional[1].Trim().ToUpper()))
+							{
+								integerB = Int32.Parse(variables[splitConditional[1].Trim().ToUpper()]);
+							}
+							else if (ValidateInteger(splitConditional[1], out errorMessage))
+							{
+								integerB = Int32.Parse(splitConditional[1]);
+							}
+							else
+							{
+								errorMessage = "Either side of the conditional must be an integer. E.g. <Integer> == <Integer>";
+								return false;
+							}
+
+							if (conditional == "==")
+							{
+								if (integerA != integerB)
+								{
+									errorMessage = "'" + splitConditional[0] + "==" + splitConditional[1] + "' returned false.";
+									return false;
+								}
+							}
+							else if (conditional == ">")
+							{
+								if (!(integerA > integerB))
+								{
+									errorMessage = "'" + splitConditional[0] + ">" + splitConditional[1] + "' returned false.";
+									return false;
+								}
+							}
+							else if (conditional == "<")
+							{
+								if (!(integerA < integerB))
+								{
+									errorMessage = "'" + splitConditional[0] + "<" + splitConditional[1] + "' returned false.";
+									return false;
+								}
+							}
+							else
+							{
+								// Code should never be reached
+								errorMessage = "";
+								return false;
+							}
+
+							inMultiLineCommand = true;
+
+							errorMessage = "multiline";
+							return true;
+						}
+						else
+						{
+							errorMessage = "The If statement block can only contain two conditionals. E.g. 'if <integer> == <integer>'";
+							return false;
+						}
+					}
+					else
+					{
+						errorMessage = "Multi-line conditional is in the incorrect format. Please see 'help' for more details.";
+						return false;
+					}
 				}
 				else if(commandParametersSplit.Length >= 2 && !String.IsNullOrWhiteSpace(commandParametersSplit[1]))
 				{
@@ -350,19 +510,19 @@ namespace GraphicalProgrammingLanguage
 					if (inMultiLineCommand)
 					{
 						// Take the last line of the loop and check for endloop
-						if (String.Equals(loopParameters[loopParameters.Length - 1].ToLower(), "endloop"))
+						if (String.Equals(loopParameters[loopParameters.Length - 1].Trim().ToLower(), "endloop"))
 						{
 							if (multiLineCommands.Count < 2)
 							{
 								// The user has ended a loop block without any commands
+								inMultiLineCommand = false;
+								multiLineCommands.Clear();
+
 								errorMessage = "The loop was empty";
 								return false;
 							}
 							else
 							{
-								inMultiLineCommand = false;
-								multiLineCommands.Clear();
-
 								//The user wants to quit the loop
 								errorMessage = "";
 								return true;
@@ -395,7 +555,7 @@ namespace GraphicalProgrammingLanguage
 							else
 							{
 								multiLineCommands.Add(lastLoopInput);
-								errorMessage = "multilineLoop";
+								errorMessage = "multiline";
 								return true;
 							}
 						}
@@ -413,7 +573,7 @@ namespace GraphicalProgrammingLanguage
 
 							multiLineCommands.Add(commandParametersSplit[0]);
 
-							errorMessage = "multilineLoop";
+							errorMessage = "multiline";
 							return true;
 						}
 					}
@@ -1107,9 +1267,19 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ";");
 
-				if (commandParameters.Length == 1)
+				if (commandParametersSplit.Length == 1)
 				{
 					// MultiLine if statement
+					for (int i = 0; i < multiLineCommands.Count; i++)
+					{
+						string[] conditionalActionSplit = SplitUserInput(multiLineCommands[i]);
+
+						string conditionalActionsCommand = conditionalActionSplit[0];
+						string conditionalActionsParameter = string.Join(" ", conditionalActionSplit.Skip(1).ToArray());
+
+						ExecuteCommand(shapeCommands, conditionalActionsCommand, conditionalActionsParameter);
+					}
+
 					return true;
 				}
 				else

@@ -48,7 +48,7 @@ namespace GraphicalProgrammingLanguage
 						this.SingleLineOutput.AppendText(errorMessage + "\n");
 						this.SingleLineOutput.ScrollToCaret();
 					}
-					else if(validCommand && String.Equals(errorMessage, "multilineLoop"))
+					else if(validCommand && String.Equals(errorMessage, "multiline"))
 					{
 						// Do nothing
 					}
@@ -182,6 +182,7 @@ namespace GraphicalProgrammingLanguage
 		{
 			this.HelpGridView.Rows.Clear();
 
+			// Populate the help table
 			string[][] rows = new string[][] {
 				new string[] { "Clear", "", "Clears the current shapes on the canvas." },
 				new string[] { "Loop", "<Integer: Number of times to loop>; <Shape Command: The shape to draw>; ...", "Single line loop which based on the first parameter will iterate the commands." },
