@@ -1229,8 +1229,17 @@ namespace GraphicalProgrammingLanguage
 				{
 					// Multi line loop
 					string[] loopParameters = commandParameters.Split('\n', '\r').ToArray();
+					int incrementer;
 
-					for(int i = 0; i < Int32.Parse(multiLineCommands[0]); i++)
+					if (variables.ContainsKey(multiLineCommands[0].Trim().ToUpper())){
+						incrementer = Int32.Parse(variables[multiLineCommands[0].Trim().ToUpper()]);
+					}
+					else
+					{
+						incrementer = Int32.Parse(multiLineCommands[0]);
+					}
+
+					for(int i = 0; i < incrementer; i++)
 					{
 						for(int d = 1; d < multiLineCommands.Count; d++)
 						{
