@@ -48,6 +48,7 @@
 			this.CommandColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ParametersColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.DescriptionColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TopMenuStrip.SuspendLayout();
 			this.CodeInputTabControl.SuspendLayout();
 			this.SingleLineInputTab.SuspendLayout();
@@ -73,9 +74,11 @@
 			// 
 			// homeToolStripMenuItem
 			// 
+			this.homeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem});
 			this.homeToolStripMenuItem.Name = "homeToolStripMenuItem";
-			this.homeToolStripMenuItem.Size = new System.Drawing.Size(62, 24);
-			this.homeToolStripMenuItem.Text = "Home";
+			this.homeToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
+			this.homeToolStripMenuItem.Text = "Draw";
 			this.homeToolStripMenuItem.Click += new System.EventHandler(this.HomeToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
@@ -246,6 +249,13 @@
 			this.DescriptionColumn.Name = "DescriptionColumn";
 			this.DescriptionColumn.ReadOnly = true;
 			// 
+			// saveImageToolStripMenuItem
+			// 
+			this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+			this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+			this.saveImageToolStripMenuItem.Text = "Save Image";
+			this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+			// 
 			// GraphicalProgrammingLanguageForm
 			// 
 			this.AllowDrop = true;
@@ -296,5 +306,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn CommandColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn ParametersColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn DescriptionColumn;
+		private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
 	}
 }

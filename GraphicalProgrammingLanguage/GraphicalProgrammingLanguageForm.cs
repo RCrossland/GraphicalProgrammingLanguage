@@ -16,6 +16,8 @@ namespace GraphicalProgrammingLanguage
 		ArrayList shapes = new ArrayList();
 		Command command = new Command();
 
+		string previousCommand;
+
 		public GraphicalProgrammingLanguageForm()
 		{
 			InitializeComponent();
@@ -72,9 +74,18 @@ namespace GraphicalProgrammingLanguage
 							if (command.ExecuteCommand(shapes, commandString, commandParameters))
 							{
 								this.GraphicsPictureBox.Refresh();
+
+								previousCommand = commandString + " " + commandParameters;
 							}
 						}
 					}
+				}
+			}
+			else if(e.KeyCode == Keys.Up)
+			{
+				if (!String.IsNullOrWhiteSpace(previousCommand))
+				{
+					this.SingleLineInputTextbox.Text = previousCommand;
 				}
 			}
 		}
@@ -295,6 +306,21 @@ namespace GraphicalProgrammingLanguage
 
 			this.HelpPanel.Visible = true;
 			this.DrawingPanel.Visible = false;
+		}
+
+		private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (MultiLineInputSaveFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				Bitmap bmp = new Bitmap(this.GraphicsPictureBox.Width, this.GraphicsPictureBox.Height);
+				this.GraphicsPictureBox.DrawToBitmap(bmp, this.GraphicsPictureBox.ClientRectangle);
+
+				bmp.Save(MultiLineInputSaveFileDialog.FileName);
+
+				this.SingleLineOutput.SelectionColor = Color.Green;
+				this.SingleLineOutput.AppendText("Image saved to " + MultiLineInputSaveFileDialog.FileName);
+				this.SingleLineOutput.ScrollToCaret();
+			}
 		}
 	}
 }
