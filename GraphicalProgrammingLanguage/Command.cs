@@ -1448,7 +1448,7 @@ namespace GraphicalProgrammingLanguage
 							}
 						}
 					}
-					catch (IndexOutOfRangeException)
+					catch (ArgumentOutOfRangeException)
 					{
 						throw;
 					}

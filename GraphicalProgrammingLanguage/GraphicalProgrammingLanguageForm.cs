@@ -238,6 +238,7 @@ namespace GraphicalProgrammingLanguage
 				if (command.ExecuteCommand(shapes, commandString, commandParameters))
 				{
 					this.GraphicsPictureBox.Refresh();
+					previousCommand = commandString + " " + commandParameters;
 				}
 			}
 			catch (FormatException ex)

@@ -23,8 +23,15 @@ namespace GraphicalProgrammingLanguage
 		/// <param name="list">A list of integer values for the currentx and currenty of the shape as well the diameter.</param>
 		public override void Set(Color colour, params int[] list)
 		{
-			base.Set(colour, list[0], list[1]);
-			radius = list[2];
+			try
+			{
+				base.Set(colour, list[0], list[1]);
+				radius = list[2];
+			}
+			catch (IndexOutOfRangeException)
+			{
+				throw;
+			}
 		}
 
 		/// <summary>

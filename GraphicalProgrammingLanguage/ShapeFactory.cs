@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
-	class ShapeFactory
+	public class ShapeFactory
 	{
 		/// <summary>
 		/// Shape factory to return the requested shape.
