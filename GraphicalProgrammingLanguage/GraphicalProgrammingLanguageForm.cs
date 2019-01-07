@@ -71,12 +71,7 @@ namespace GraphicalProgrammingLanguage
 							// Set the TextBox value to be an empty string
 							singleLineInputTextBox.Text = "";
 
-							if (command.ExecuteCommand(shapes, commandString, commandParameters))
-							{
-								this.GraphicsPictureBox.Refresh();
-
-								previousCommand = commandString + " " + commandParameters;
-							}
+							CallCommand(commandString, commandParameters);
 						}
 					}
 				}
@@ -230,13 +225,46 @@ namespace GraphicalProgrammingLanguage
 						this.SingleLineOutput.AppendText("Line: " + lineNumber + " - " + line + "\n");
 						this.SingleLineOutput.ScrollToCaret();
 
-
-						if (command.ExecuteCommand(shapes, globalCommand, globalParameters))
-						{
-							this.GraphicsPictureBox.Refresh();
-						}
+						CallCommand(globalCommand, globalParameters);
 					}
 				}
+			}
+		}
+
+		public void CallCommand(string commandString, string commandParameters)
+		{
+			try
+			{
+				if (command.ExecuteCommand(shapes, commandString, commandParameters))
+				{
+					this.GraphicsPictureBox.Refresh();
+				}
+			}
+			catch (FormatException ex)
+			{
+				Console.WriteLine(ex);
+
+				// If the user has not entered a valid command
+				this.SingleLineOutput.SelectionColor = Color.Red;
+				this.SingleLineOutput.AppendText("A string value tried to parse to an integer" + "\n");
+				this.SingleLineOutput.ScrollToCaret();
+			}
+			catch (IndexOutOfRangeException ex)
+			{
+				Console.WriteLine(ex);
+
+				// If the user has not entered a valid command
+				this.SingleLineOutput.SelectionColor = Color.Red;
+				this.SingleLineOutput.AppendText("The wrong number of parameters have been passed." + "\n");
+				this.SingleLineOutput.ScrollToCaret();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+				// If the user has not entered a valid command
+				this.SingleLineOutput.SelectionColor = Color.Red;
+				this.SingleLineOutput.AppendText("An error occured" + "\n");
+				this.SingleLineOutput.ScrollToCaret();
 			}
 		}
 

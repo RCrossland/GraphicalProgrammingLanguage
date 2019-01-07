@@ -1074,17 +1074,34 @@ namespace GraphicalProgrammingLanguage
 				}
 				catch (System.FormatException)
 				{
-					Console.WriteLine("Cannot parse " + commandParametersSplit[0] + " to an integer");
 					throw;
 				}
-				string shapeCommandString = commandParametersSplit[1];
-				string commandColour = commandParametersSplit[2];
-				string commandOperator = commandParametersSplit[3];
+
+
+				string shapeCommandString, commandColour, commandOperator;
+				try
+				{
+					shapeCommandString = commandParametersSplit[1];
+					commandColour = commandParametersSplit[2];
+					commandOperator = commandParametersSplit[3];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 				for(int i = 0; i < numberOfIterations; i++){
 					if (String.Equals(shapeCommandString.ToUpper(), "SQUARE") || String.Equals(shapeCommandString.ToUpper(), "CIRCLE"))
 					{
 						// Get the point defined by the user
-						var inputPoint = commandParametersSplit[4];
+						var inputPoint = "";
+						try
+						{
+							inputPoint = commandParametersSplit[4];
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						int point = 0;
 						int calculatedPoint;
 
@@ -1133,8 +1150,17 @@ namespace GraphicalProgrammingLanguage
 					}
 					else if(String.Equals(shapeCommandString.ToUpper(), "RECTANGLE"))
 					{
-						var inputPointX = commandParametersSplit[4];
-						var inputPointY = commandParametersSplit[5];
+						var inputPointX = "";
+						var inputPointY = "";
+						try
+						{
+							inputPointX = commandParametersSplit[4];
+							inputPointY = commandParametersSplit[5];
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						int pointX = 0;
 						int pointY = 0;
 						int calculatedPointX, calculatedPointY;
@@ -1216,9 +1242,20 @@ namespace GraphicalProgrammingLanguage
 					}
 					else if(String.Equals(shapeCommandString.ToUpper(), "TRIANGLE"))
 					{
-						var inputPoint1 = commandParametersSplit[4];
-						var inputPoint2 = commandParametersSplit[5];
-						var inputPoint3 = commandParametersSplit[6];
+						var inputPoint1 = "";
+						var inputPoint2 = "";
+						var inputPoint3 = "";
+
+						try
+						{
+							inputPoint1 = commandParametersSplit[4];
+							inputPoint2 = commandParametersSplit[5];
+							inputPoint3 = commandParametersSplit[6];
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						string points1, points2, points3;
 						int calculatedPoint1X, calculatedPoint1Y, calculatedPoint2X, calculatedPoint2Y, calculatedPoint3X, calculatedPoint3Y;
 
@@ -1268,6 +1305,10 @@ namespace GraphicalProgrammingLanguage
 							{
 								throw;
 							}
+							catch (IndexOutOfRangeException)
+							{
+								throw;
+							}
 						}
 						else
 						{
@@ -1284,6 +1325,10 @@ namespace GraphicalProgrammingLanguage
 							{
 								throw;
 							}
+							catch (IndexOutOfRangeException)
+							{
+								throw;
+							}
 						}
 
 						string shapeCommandParameters = commandColour + "," + (calculatedPoint1X + " " + calculatedPoint1Y) + "," +
@@ -1293,48 +1338,70 @@ namespace GraphicalProgrammingLanguage
 					}
 					else if(String.Equals(shapeCommandString.ToUpper(), "POLYGON"))
 					{
-						string[] parameterPoints = commandParametersSplit.Skip(4).ToArray();
+						string[] parameterPoints;
+						try
+						{
+							parameterPoints = commandParametersSplit.Skip(4).ToArray();
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						string shapeCommandParameters = commandColour; ;
 
 						for(int d = 0; d < parameterPoints.Length; d++)
 						{
 							string points;
 
-							if (variables.ContainsKey(parameterPoints[d].Trim().ToUpper()))
+							try
 							{
-								points = variables[parameterPoints[d].Trim().ToUpper()];
+								if (variables.ContainsKey(parameterPoints[d].Trim().ToUpper()))
+								{
+									points = variables[parameterPoints[d].Trim().ToUpper()];
+								}
+								else
+								{
+									points = parameterPoints[d];
+								}
 							}
-							else
+							catch (IndexOutOfRangeException)
 							{
-								points = parameterPoints[d];
+								throw;
 							}
 
 							string[] splitPoints = points.Split(' ').ToArray();
 							int splitPointX, splitPointY;
 
-							if(String.Equals(commandParametersSplit[3], "+"))
+							try
 							{
-								try
+								if (String.Equals(commandParametersSplit[3], "+"))
 								{
-									splitPointX = Int32.Parse(splitPoints[0]) * (i + 1);
-									splitPointY = Int32.Parse(splitPoints[1]) * (i + 1);
+									try
+									{
+										splitPointX = Int32.Parse(splitPoints[0]) * (i + 1);
+										splitPointY = Int32.Parse(splitPoints[1]) * (i + 1);
+									}
+									catch (FormatException)
+									{
+										throw;
+									}
 								}
-								catch (FormatException)
+								else
 								{
-									throw;
+									try
+									{
+										splitPointX = Int32.Parse(splitPoints[0]) / (i + 1);
+										splitPointY = Int32.Parse(splitPoints[1]) / (i + 1);
+									}
+									catch (FormatException)
+									{
+										throw;
+									}
 								}
 							}
-							else
+							catch (IndexOutOfRangeException)
 							{
-								try
-								{
-									splitPointX = Int32.Parse(splitPoints[0]) / (i + 1);
-									splitPointY = Int32.Parse(splitPoints[1]) / (i + 1);
-								}
-								catch (FormatException)
-								{
-									throw;
-								}
+								throw;
 							}
 
 							shapeCommandParameters = shapeCommandParameters + "," + splitPointX.ToString() + " " + splitPointY.ToString();
@@ -1356,22 +1423,60 @@ namespace GraphicalProgrammingLanguage
 					string[] loopParameters = commandParameters.Split('\n', '\r').ToArray();
 					int incrementer;
 
-					if (variables.ContainsKey(multiLineCommands[0].Trim().ToUpper())){
-						incrementer = Int32.Parse(variables[multiLineCommands[0].Trim().ToUpper()]);
-					}
-					else
+					try
 					{
-						incrementer = Int32.Parse(multiLineCommands[0]);
+						if (variables.ContainsKey(multiLineCommands[0].Trim().ToUpper()))
+						{
+							try
+							{
+								incrementer = Int32.Parse(variables[multiLineCommands[0].Trim().ToUpper()]);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
+						}
+						else
+						{
+							try
+							{
+								incrementer = Int32.Parse(multiLineCommands[0]);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
+						}
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
 					}
 
 					for(int i = 0; i < incrementer; i++)
 					{
 						for(int d = 1; d < multiLineCommands.Count; d++)
 						{
-							string[] loopInputSplit = SplitUserInput(multiLineCommands[d].Trim());
+							string[] loopInputSplit;
+							try
+							{
+								loopInputSplit = SplitUserInput(multiLineCommands[d].Trim());
+							}
+							catch (IndexOutOfRangeException)
+							{
+								throw;
+							}
 
-							string loopInputCommand = loopInputSplit[0];
-							string loopInputParameter = string.Join(" ", loopInputSplit.Skip(1).ToArray());
+							string loopInputCommand, loopInputParameter;
+							try
+							{
+								loopInputCommand = loopInputSplit[0];
+								loopInputParameter = string.Join(" ", loopInputSplit.Skip(1).ToArray());
+							}
+							catch (IndexOutOfRangeException)
+							{
+								throw;
+							}
 
 							ExecuteCommand(shapeCommands, loopInputCommand, loopInputParameter);
 						}
@@ -1383,18 +1488,34 @@ namespace GraphicalProgrammingLanguage
 				else
 				{
 					// Single line loop
-					string[] loopActions = commandParametersSplit.Skip(1).ToArray();
-					for (int x = 0; x < Int32.Parse(commandParametersSplit[0]); x++)
+					string[] loopActions;
+					try
 					{
-						for (int i = 0; i < loopActions.Length; i++)
+						loopActions = commandParametersSplit.Skip(1).ToArray();
+						for (int x = 0; x < Int32.Parse(commandParametersSplit[0]); x++)
 						{
-							string[] loopActionsSplit = SplitUserInput(loopActions[i]);
+							for (int i = 0; i < loopActions.Length; i++)
+							{
+								string[] loopActionsSplit = SplitUserInput(loopActions[i]);
 
-							string loopActionsCommand = loopActionsSplit[0];
-							string loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+								string loopActionsCommand, loopActionsParameter;
+								try
+								{
+									loopActionsCommand = loopActionsSplit[0];
+									loopActionsParameter = string.Join(" ", loopActionsSplit.Skip(1).ToArray());
+								}
+								catch (IndexOutOfRangeException)
+								{
+									throw;
+								}
 
-							ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
+								ExecuteCommand(shapeCommands, loopActionsCommand, loopActionsParameter);
+							}
 						}
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
 					}
 
 					return true;
@@ -1428,8 +1549,16 @@ namespace GraphicalProgrammingLanguage
 					{
 						string[] conditionalActionSplit = SplitUserInput(commandParametersSplit[i]);
 
-						string conditionalActionsCommand = conditionalActionSplit[0];
-						string conditionalActionsParameter = string.Join(" ", conditionalActionSplit.Skip(1).ToArray());
+						string conditionalActionsCommand, conditionalActionsParameter;
+						try
+						{
+							conditionalActionsCommand = conditionalActionSplit[0];
+							conditionalActionsParameter = string.Join(" ", conditionalActionSplit.Skip(1).ToArray());
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 
 						ExecuteCommand(shapeCommands, conditionalActionsCommand, conditionalActionsParameter);
 					}
@@ -1441,20 +1570,44 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				var inputPointX = commandParametersSplit[1];
-				var inputPointY = commandParametersSplit[2];
+				string commandColour;
+				var inputPointX = "";
+				var inputPointY = "";
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					inputPointX = commandParametersSplit[1];
+					inputPointY = commandParametersSplit[2];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 
 				int pointX = 0;
 				int pointY = 0;
 
 				if(Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
-					pointX = Int32.Parse(inputPointX);
+					try
+					{
+						pointX = Int32.Parse(inputPointX);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				} 
 				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
 				{
-					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					try
+					{
+						pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1463,11 +1616,25 @@ namespace GraphicalProgrammingLanguage
 
 				if(Regex.IsMatch(inputPointY, "^[0-9]+$"))
 				{
-					pointY = Int32.Parse(inputPointY);
+					try
+					{
+						pointY = Int32.Parse(inputPointY);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					try
+					{
+						pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1487,21 +1654,46 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				string textureFilePath = commandParametersSplit[1];
-				var inputPointX = commandParametersSplit[2];
-				var inputPointY = commandParametersSplit[3];
+				string commandColour, textureFilePath;
+				var inputPointX = "";
+				var inputPointY = "";
+
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					textureFilePath = commandParametersSplit[1];
+					inputPointX = commandParametersSplit[2];
+					inputPointY = commandParametersSplit[3];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 
 				int pointX = 0;
 				int pointY = 0;
 
 				if (Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
-					pointX = Int32.Parse(inputPointX);
+					try
+					{
+						pointX = Int32.Parse(inputPointX);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
 				{
-					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					try
+					{
+						pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1510,11 +1702,25 @@ namespace GraphicalProgrammingLanguage
 
 				if (Regex.IsMatch(inputPointY, "^[0-9]+$"))
 				{
-					pointY = Int32.Parse(inputPointY);
+					try
+					{
+						pointY = Int32.Parse(inputPointY);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					try
+					{
+						pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1544,19 +1750,43 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				var inputPoint = commandParametersSplit[1];
+				string commandColour;
+				var inputPoint = "";
+
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					inputPoint = commandParametersSplit[1];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 				int point = 0;
 
 				if(Regex.IsMatch(inputPoint, "^[0-9]+$"))
 				{
-					point = Int32.Parse(inputPoint);
+					try
+					{
+						point = Int32.Parse(inputPoint);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPoint.Trim().ToUpper()))
 				{
 					if (Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 					{
-						point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+						try
+						{
+							point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+						}
+						catch (FormatException)
+						{
+							throw;
+						}
 					}
 					else
 					{
@@ -1577,19 +1807,43 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				var inputPoint = commandParametersSplit[1];
+				string commandColour;
+				var inputPoint = "";
+
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					inputPoint = commandParametersSplit[1];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 				int point = 0;
 
 				if (Regex.IsMatch(inputPoint, "^[0-9]+$"))
 				{
-					point = Int32.Parse(inputPoint);
+					try
+					{
+						point = Int32.Parse(inputPoint);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPoint.Trim().ToUpper()))
 				{
 					if (Regex.IsMatch(variables[inputPoint.Trim().ToUpper()], "^[0-9]+$"))
 					{
-						point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+						try
+						{
+							point = Int32.Parse(variables[inputPoint.Trim().ToUpper()]);
+						}
+						catch (FormatException)
+						{
+							throw;
+						}
 					}
 					else
 					{
@@ -1610,18 +1864,41 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				var inputPointX = commandParametersSplit[0];
-				var inputPointY = commandParametersSplit[1];
+				var inputPointX = "";
+				var inputPointY = "";
+				try
+				{
+					inputPointX = commandParametersSplit[0];
+					inputPointY = commandParametersSplit[1];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 				int pointX = 0;
 				int pointY = 0;
 
 				if(Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
-					pointX = Int32.Parse(inputPointX);
+					try
+					{
+						pointX = Int32.Parse(inputPointX);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
 				{
-					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					try
+					{
+						pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1630,11 +1907,25 @@ namespace GraphicalProgrammingLanguage
 
 				if(Regex.IsMatch(inputPointY, "^[0-9]+$"))
 				{
-					pointY = Int32.Parse(inputPointY);
+					try
+					{
+						pointY = Int32.Parse(inputPointY);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					try
+					{
+						pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1650,19 +1941,44 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				var inputPointX = commandParametersSplit[1];
-				var inputPointY = commandParametersSplit[2];
+				string commandColour;
+				var inputPointX = "";
+				var inputPointY = "";
+
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					inputPointX = commandParametersSplit[1];
+					inputPointY = commandParametersSplit[2];
+				}
+				catch (FormatException)
+				{
+					throw;
+				}
 				int pointX = 0;
 				int pointY = 0;
 
 				if (Regex.IsMatch(inputPointX, "^[0-9]+$"))
 				{
-					pointX = Int32.Parse(inputPointX);
+					try
+					{
+						pointX = Int32.Parse(inputPointX);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointX.Trim().ToUpper()))
 				{
-					pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					try
+					{
+						pointX = Int32.Parse(variables[inputPointX.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1671,11 +1987,25 @@ namespace GraphicalProgrammingLanguage
 
 				if (Regex.IsMatch(inputPointY, "^[0-9]+$"))
 				{
-					pointY = Int32.Parse(inputPointY);
+					try
+					{
+						pointY = Int32.Parse(inputPointY);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else if (variables.ContainsKey(inputPointY.Trim().ToUpper()))
 				{
-					pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					try
+					{
+						pointY = Int32.Parse(variables[inputPointY.Trim().ToUpper()]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
 				}
 				else
 				{
@@ -1697,10 +2027,21 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
-				var inputPoint1 = commandParametersSplit[1];
-				var inputPoint2 = commandParametersSplit[2];
-				var inputPoint3 = commandParametersSplit[3];
+				string commandColour;
+				var inputPoint1 = "";
+				var inputPoint2 = "";
+				var inputPoint3 = "";
+				try
+				{
+					commandColour = commandParametersSplit[0];
+					inputPoint1 = commandParametersSplit[1];
+					inputPoint2 = commandParametersSplit[2];
+					inputPoint3 = commandParametersSplit[3];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 
 				int point1X, point1Y, point2X, point2Y, point3X, point3Y = 0;
 
@@ -1708,20 +2049,46 @@ namespace GraphicalProgrammingLanguage
 				{
 					string[] points1 = variables[inputPoint1.Trim().ToUpper()].Split(' ');
 
-					if(!Regex.IsMatch(points1[0], "^[0-9]+$") || !Regex.IsMatch(points1[1], "^[0-9]+$")){
-						return false;
-					}
-					else
+					try
 					{
-						point1X = Int32.Parse(points1[0]);
-						point1Y = Int32.Parse(points1[1]);
+						if (!Regex.IsMatch(points1[0], "^[0-9]+$") || !Regex.IsMatch(points1[1], "^[0-9]+$"))
+						{
+							return false;
+						}
+						else
+						{
+							try
+							{
+								point1X = Int32.Parse(points1[0]);
+								point1Y = Int32.Parse(points1[1]);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
+						}
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
 					}
 				}
 				else
 				{
 					string[] point1 = inputPoint1.Split(' ');
-					point1X = Int32.Parse(point1[0]);
-					point1Y = Int32.Parse(point1[1]);
+					try
+					{
+						point1X = Int32.Parse(point1[0]);
+						point1Y = Int32.Parse(point1[1]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
+					}
 				}
 
 
@@ -1729,44 +2096,94 @@ namespace GraphicalProgrammingLanguage
 				{
 					string[] points2 = variables[inputPoint2.Trim().ToUpper()].Split(' ');
 
-					if (!Regex.IsMatch(points2[0], "^[0-9]+$") || !Regex.IsMatch(points2[1], "^[0-9]+$"))
+					try
 					{
-						return false;
+						if (!Regex.IsMatch(points2[0], "^[0-9]+$") || !Regex.IsMatch(points2[1], "^[0-9]+$"))
+						{
+							return false;
+						}
+						else
+						{
+							try
+							{
+								point2X = Int32.Parse(points2[0]);
+								point2Y = Int32.Parse(points2[1]);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
+
+						}
 					}
-					else
+					catch (IndexOutOfRangeException)
 					{
-						point2X = Int32.Parse(points2[0]);
-						point2Y = Int32.Parse(points2[1]);
+						throw;
 					}
 				}
 				else
 				{
 					string[] points2 = inputPoint2.Split(' ');
 
-					point2X = Int32.Parse(points2[0]);
-					point2Y = Int32.Parse(points2[1]);
+					try
+					{
+						point2X = Int32.Parse(points2[0]);
+						point2Y = Int32.Parse(points2[1]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
+					}
 				}
 
 				if (variables.ContainsKey(inputPoint3.Trim().ToUpper()))
 				{
 					string[] points3 = variables[inputPoint3.Trim().ToUpper()].Split(' ');
 
-					if (!Regex.IsMatch(points3[0], "^[0-9]+$") || !Regex.IsMatch(points3[1], "^[0-9]+$"))
+					try
 					{
-						return false;
+						if (!Regex.IsMatch(points3[0], "^[0-9]+$") || !Regex.IsMatch(points3[1], "^[0-9]+$"))
+						{
+							return false;
+						}
+						else
+						{
+							try
+							{
+								point3X = Int32.Parse(points3[0]);
+								point3Y = Int32.Parse(points3[1]);
+							}
+							catch (FormatException)
+							{
+								throw;
+							}
+						}
 					}
-					else
+					catch (IndexOutOfRangeException)
 					{
-						point3X = Int32.Parse(points3[0]);
-						point3Y = Int32.Parse(points3[1]);
+						throw;
 					}
 				}
 				else
 				{
 					string[] points3 = inputPoint3.Split(' ');
-
-					point3X = Int32.Parse(points3[0]);
-					point3Y = Int32.Parse(points3[1]);
+					try
+					{
+						point3X = Int32.Parse(points3[0]);
+						point3Y = Int32.Parse(points3[1]);
+					}
+					catch (FormatException)
+					{
+						throw;
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
+					}
 				}
 
 				// Get the shape and set the values
@@ -1782,7 +2199,15 @@ namespace GraphicalProgrammingLanguage
 			{
 				string[] commandParametersSplit = SplitParameters(commandParameters, ",");
 
-				string commandColour = commandParametersSplit[0];
+				string commandColour;
+				try
+				{
+					commandColour = commandParametersSplit[0];
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw;
+				}
 
 				List<int> integerPoints = new List<int>();
 				integerPoints.Add(currentX);
@@ -1796,26 +2221,37 @@ namespace GraphicalProgrammingLanguage
 					int pointX = 0;
 					int pointY = 0;
 
-					if (variables.ContainsKey(pointsList[i].Trim().ToUpper()))
+					try
 					{
-						string[] pointsSplit = variables[pointsList[i].Trim().ToUpper()].Split(' ').ToArray();
-
-						if(Regex.IsMatch(pointsSplit[0], "^[0-9]+$") && Regex.IsMatch(pointsSplit[1], "^[0-9]+$"))
+						if (variables.ContainsKey(pointsList[i].Trim().ToUpper()))
 						{
-							pointX = Int32.Parse(pointsSplit[0]);
-							pointY = Int32.Parse(pointsSplit[1]);
-						} 
+							string[] pointsSplit = variables[pointsList[i].Trim().ToUpper()].Split(' ').ToArray();
+
+							if (Regex.IsMatch(pointsSplit[0], "^[0-9]+$") && Regex.IsMatch(pointsSplit[1], "^[0-9]+$"))
+							{
+								pointX = Int32.Parse(pointsSplit[0]);
+								pointY = Int32.Parse(pointsSplit[1]);
+							}
+							else
+							{
+								return false;
+							}
+						}
 						else
 						{
-							return false;
+							string[] pointsSplit = pointsList[i].Split(' ').ToArray();
+
+							pointX = Int32.Parse(pointsSplit[0]);
+							pointY = Int32.Parse(pointsSplit[1]);
 						}
 					}
-					else
+					catch (FormatException)
 					{
-						string[] pointsSplit = pointsList[i].Split(' ').ToArray();
-
-						pointX = Int32.Parse(pointsSplit[0]);
-						pointY = Int32.Parse(pointsSplit[1]);
+						throw;
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
 					}
 
 					integerPoints.Add(pointX);
@@ -1841,59 +2277,100 @@ namespace GraphicalProgrammingLanguage
 				if (commandString.Contains("="))
 				{
 					string[] variableSplit = commandString.Trim().Split('=').ToArray();
-					string variableName = variableSplit[0];
+					string variableName;
+					try
+					{
+						variableName = variableSplit[0];
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
+					}
 
 					if (variables.ContainsKey(variableName.Trim().ToUpper()))
 					{
-						variables[variableName.Trim().ToUpper()] = variableSplit[1].Trim();
+						try
+						{
+							variables[variableName.Trim().ToUpper()] = variableSplit[1].Trim();
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						return true;
 					}
 					else
 					{
-						variables.Add(variableName.Trim().ToUpper(), variableSplit[1].Trim());
+						try
+						{
+							variables.Add(variableName.Trim().ToUpper(), variableSplit[1].Trim());
+						}
+						catch (IndexOutOfRangeException)
+						{
+							throw;
+						}
 						return true;
 					}
 				}
 				else if (commandParametersSplit[0].Contains("="))
 				{
-					string[] splitVariable = commandParametersSplit[0].Split('=');
+					string[] splitVariable;
+					try
+					{
+						splitVariable = commandParametersSplit[0].Split('=');
+					}
+					catch (IndexOutOfRangeException)
+					{
+						throw;
+					}
 					int variableValue = 0;
 
-					if(splitVariable[1].Contains("+"))
+					try
 					{
-						string[] splitVariableOnOperator = splitVariable[1].Split('+');
-
-						for(int d = 0; d < splitVariableOnOperator.Length; d++)
+						if (splitVariable[1].Contains("+"))
 						{
-							if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+							string[] splitVariableOnOperator = splitVariable[1].Split('+');
+
+							for (int d = 0; d < splitVariableOnOperator.Length; d++)
 							{
-								variableValue = variableValue + Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
-							}
-							else
-							{
-								variableValue = variableValue + Int32.Parse(splitVariableOnOperator[d]);
+								if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+								{
+									variableValue = variableValue + Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
+								}
+								else
+								{
+									variableValue = variableValue + Int32.Parse(splitVariableOnOperator[d]);
+								}
 							}
 						}
-					}
-					else if(splitVariable[1].Contains("-"))
-					{
-						string[] splitVariableOnOperator = splitVariable[1].Split('-');
-
-						for (int d = 0; d < splitVariableOnOperator.Length; d++)
+						else if (splitVariable[1].Contains("-"))
 						{
-							if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+							string[] splitVariableOnOperator = splitVariable[1].Split('-');
+
+							for (int d = 0; d < splitVariableOnOperator.Length; d++)
 							{
-								variableValue = variableValue - Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
-							}
-							else
-							{
-								variableValue = variableValue - Int32.Parse(splitVariableOnOperator[d]);
+								if (variables.ContainsKey(splitVariableOnOperator[d].Trim().ToUpper()))
+								{
+									variableValue = variableValue - Int32.Parse(variables[splitVariableOnOperator[d].Trim().ToUpper()]);
+								}
+								else
+								{
+									variableValue = variableValue - Int32.Parse(splitVariableOnOperator[d]);
+								}
 							}
 						}
+						else
+						{
+							variableValue = Int32.Parse(splitVariable[1]);
+						}
 					}
-					else
+					catch (IndexOutOfRangeException)
 					{
-						variableValue = Int32.Parse(splitVariable[1]);
+						throw;
+					}
+					catch (FormatException)
+					{
+						throw;
 					}
 
 					if (variables.ContainsKey(commandString.Trim().ToUpper()))
